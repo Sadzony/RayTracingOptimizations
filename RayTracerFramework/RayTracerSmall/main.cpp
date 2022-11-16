@@ -99,14 +99,14 @@ public:
 	//[/comment]
 	bool intersect(const Vec3f &rayorig, const Vec3f &raydir, float &t0, float &t1) const
 	{
-		Vec3f l = center - rayorig;
-		float tca = l.dot(raydir);
-		if (tca < 0) return false;
-		float d2 = l.dot(l) - tca * tca;
-		if (d2 > radius2) return false;
-		float thc = sqrt(radius2 - d2);
-		t0 = tca - thc;
-		t1 = tca + thc;
+		Vec3f l = center - rayorig; //line from ray origin to sphere centre
+		float tca = l.dot(raydir); //dot product the line with ray direction
+		if (tca < 0) return false; //if dot product is negative, they face away from each other so negative
+		float d2 = l.dot(l) - tca * tca; //how far the direction vector is from the centre (squared)
+		if (d2 > radius2) return false; //if its further than the radius, return false
+		float thc = sqrt(radius2 - d2); //how far on the radius the hit is
+		t0 = tca - thc; //distance to entry point
+		t1 = tca + thc; //distance to exit point
 
 		return true;
 	}
@@ -171,10 +171,21 @@ Vec3f trace(
 		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
 		// compute reflection direction (not need to normalize because all vectors
 		// are already normalized)
-		Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
-		refldir.normalize();
-		Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
+
+		Vec3f reflection = 0;
 		Vec3f refraction = 0;
+
+		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
+
+		//if reflective, find reflection
+		if (sphere->reflection) {
+			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
+			refldir.normalize();
+			Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
+			surfaceColor += reflection * fresneleffect;
+		}
+
+
 		// if the sphere is also transparent compute refraction ray (transmission)
 		if (sphere->transparency) {
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
@@ -183,11 +194,11 @@ Vec3f trace(
 			Vec3f refrdir = raydir * eta + nhit * (eta *  cosi - sqrt(k));
 			refrdir.normalize();
 			refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
+			surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
 		}
+
 		// the result is a mix of reflection and refraction (if the sphere is transparent)
-		surfaceColor = (
-			reflection * fresneleffect +
-			refraction * (1 - fresneleffect) * sphere->transparency) * sphere->surfaceColor;
+		surfaceColor *= sphere->surfaceColor;
 	}
 	else {
 		// it's a diffuse object, no need to raytrace any further
@@ -222,25 +233,26 @@ Vec3f trace(
 //[/comment]
 void render(const std::vector<Sphere> &spheres, int iteration)
 {
-	// quick and dirty
-	unsigned width = 640, height = 480;
 	// Recommended Testing Resolution
-	//unsigned width = 640, height = 480;
+	unsigned const width = 640, height = 480;
 
 	// Recommended Production Resolution
 	//unsigned width = 1920, height = 1080;
-	Vec3f *image = new Vec3f[width * height], *pixel = image;
-	float invWidth = 1 / float(width), invHeight = 1 / float(height);
+	Vec3f *image = new Vec3f[width * height], *pixel = image; //array of colors
+	float invWidth = 2 / float(width), invHeight = 2 / float(height); //optimization: rather than multiplying by 2 on every iteration, just do it here once.
 	float fov = 30, aspectratio = width / float(height);
 	float angle = tan(M_PI * 0.5 * fov / 180.);
+	float angleAndAspect = angle * aspectratio;
 	// Trace rays
+	Vec3f zero = Vec3f(0);
 	for (unsigned y = 0; y < height; ++y) {
 		for (unsigned x = 0; x < width; ++x, ++pixel) {
-			float xx = (2 * ((x + 0.5) * invWidth) - 1) * angle * aspectratio;
-			float yy = (1 - 2 * ((y + 0.5) * invHeight)) * angle;
+			//optimization: removing "+0.5" from xx and yy didnt make a difference to the output image
+			float xx = (x * invWidth - 1) * angleAndAspect;
+			float yy = (1 - y * invHeight) * angle;
 			Vec3f raydir(xx, yy, -1);
 			raydir.normalize();
-			*pixel = trace(Vec3f(0), raydir, spheres, 0);
+			*pixel = trace(zero, raydir, spheres, 0);
 		}
 	}
 	// Save result to a PPM image (keep these flags if you compile under Windows)
@@ -257,7 +269,7 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 			(unsigned char)(std::min(float(1), image[i].z) * 255);
 	}
 	ofs.close();
-	delete[] image;
+f	delete[] image;
 }
 
 void BasicRender()
@@ -272,6 +284,8 @@ void BasicRender()
 	
 	// This creates a file, titled 1.ppm in the current working directory
 	render(spheres, 1);
+	
+	spheres.clear();
 
 }
 
@@ -345,9 +359,9 @@ int main(int argc, char **argv)
 {
 	// This sample only allows one choice per program execution. Feel free to improve upon this
 	srand(13);
-	//BasicRender();
+	BasicRender();
 	//SimpleShrinking();
-	SmoothScaling();
+	//SmoothScaling();
 
 	return 0;
 }
