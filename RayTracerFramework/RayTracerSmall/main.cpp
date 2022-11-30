@@ -33,6 +33,8 @@
 #include <string.h>
 #include <chrono>
 
+#include "MemoryDebugger.h"
+
 #if defined __linux__ || defined __APPLE__
 // "Compiled for Linux
 #else
@@ -276,6 +278,10 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 			(unsigned char)(std::min(float(1), image[i].z) * 255);
 	}
 	ofs.close();
+#ifdef  _DEBUG
+	HeapManager::GetHeapByIndex(0)->WalkTheHeap();
+	HeapManager::GetHeapByIndex(1)->WalkTheHeap();
+#endif
 	delete[] image;
 }
 
@@ -289,11 +295,11 @@ void BasicRender()
 	spheres.push_back(Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
 	spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
 
-	auto start = std::chrono::steady_clock::now();
+	auto start = std::chrono::system_clock::now();
 	
 	// This creates a file, titled 1.ppm in the current working directory
 	render(spheres, 1);
-	auto finish = std::chrono::steady_clock::now();
+	auto finish = std::chrono::system_clock::now();
 	double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
 
 	std::cout << "Rendered and saved spheres" << 1 << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
@@ -382,6 +388,11 @@ int main(int argc, char **argv)
 	BasicRender();
 	//SimpleShrinking();
 	//SmoothScaling();
+
+#ifdef  _DEBUG
+	HeapManager::CleanUp();
+#endif //  _DEBUG
+
 
 	return 0;
 }

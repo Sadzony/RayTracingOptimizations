@@ -1,16 +1,9 @@
-﻿Build started 09/03/2016 11:57:30.
-     1>Project "c:\Users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\PlayStationRayTracer\PlayStationRayTracer.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         main.cpp
-         orbis-clang.exe -o ORBIS_Debug\main.o -c -MD -MV -fdiagnostics-format=msvc -I"C:\Program Files (x86)\SCE\ORBIS SDKs\3.000\host_tools\lib\clang\include" -I"C:\Program Files (x86)\SCE\ORBIS SDKs\3.000\target\include" -I"C:\Program Files (x86)\SCE\ORBIS SDKs\3.000\target\include_common" -D_DEBUG -g -Wall -fno-caret-diagnostics -O0 "c:\Users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\PlayStationRayTracer\main.cpp"
-     1>c:\Users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\PlayStationRayTracer\main.cpp(222,7): warning : unused variable 'start' [-Wunused-variable]
-     1>c:\Users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\PlayStationRayTracer\main.cpp(227,6): warning : unused variable 'ret' [-Wunused-variable]
-     1>c:\Users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\PlayStationRayTracer\main.cpp(34,18): warning : unused variable 'num_threads' [-Wunused-const-variable]
-       Link:
-         C:\Program Files (x86)\SCE\ORBIS SDKs\3.000\host_tools\bin\orbis-ld.exe -o "c:\users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\ORBIS_Debug\PlayStationRayTracer.elf" --start-group ORBIS_Debug\main.o "-lSceDbgEnC" --end-group
-         PlayStationRayTracer.vcxproj -> c:\users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\ORBIS_Debug\PlayStationRayTracer.elf
-     1>Done Building Project "c:\Users\cam2.staff\documents\visual studio 2013\Projects\PlayStationRayTracer\PlayStationRayTracer\PlayStationRayTracer.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:01.45
+﻿  main.cpp
+D:\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(225,6): warning : unused variable 'ret' [-Wunused-variable]
+          int ret = onionAllocator.initialize(
+              ^
+D:\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(34,18): warning : unused variable 'num_threads' [-Wunused-const-variable]
+  static const int num_threads = 10;
+                   ^
+  2 warnings generated.
+  PlayStationRayTracer.vcxproj -> D:\RayTracingOptimizations\PlayStationRayTracer\ORBIS_Debug\PlayStationRayTracer.elf
