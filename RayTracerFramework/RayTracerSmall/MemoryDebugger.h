@@ -13,7 +13,7 @@ enum class HeapID //flag defining what heap the object is in.
 };
 
 //forward declare
-struct MemoryHeap;
+class MemoryHeap;
 
 
 //Header and footer structs for identifying allocated memory

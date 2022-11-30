@@ -24,6 +24,9 @@
 
 #include "allocator.h"
 
+//memory
+#include "MemoryDebugger.h"
+
 
 static const size_t kOnionMemorySize = 64 * 1024 * 1024;
 
@@ -297,6 +300,7 @@ int main(int argc, char **argv)
 	{
 		BasicRender(i);
 	}
+	
 	
 	return 0;
 }
