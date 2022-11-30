@@ -27,6 +27,8 @@
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include "Sphere.h"
+#include "Vec3.h"
 // Windows only
 #include <algorithm>
 #include <sstream>
@@ -34,6 +36,7 @@
 #include <chrono>
 
 #include "MemoryDebugger.h"
+#include "MemoryPool.h"
 
 #if defined __linux__ || defined __APPLE__
 // "Compiled for Linux
@@ -43,77 +46,7 @@
 #define INFINITY 1e8
 #endif
 
-template<typename T>
-class Vec3
-{
-public:
-	T x, y, z;
-	Vec3() : x(T(0)), y(T(0)), z(T(0)) {}
-	Vec3(T xx) : x(xx), y(xx), z(xx) {}
-	Vec3(T xx, T yy, T zz) : x(xx), y(yy), z(zz) {}
-	Vec3& normalize()
-	{
-		T nor2 = length2();
-		if (nor2 > 0) {
-			T invNor = 1 / sqrt(nor2);
-			x *= invNor, y *= invNor, z *= invNor;
-		}
-		return *this;
-	}
-	Vec3<T> operator * (const T &f) const { return Vec3<T>(x * f, y * f, z * f); }
-	Vec3<T> operator * (const Vec3<T> &v) const { return Vec3<T>(x * v.x, y * v.y, z * v.z); }
-	T dot(const Vec3<T> &v) const { return x * v.x + y * v.y + z * v.z; }
-	Vec3<T> operator - (const Vec3<T> &v) const { return Vec3<T>(x - v.x, y - v.y, z - v.z); }
-	Vec3<T> operator + (const Vec3<T> &v) const { return Vec3<T>(x + v.x, y + v.y, z + v.z); }
-	Vec3<T>& operator += (const Vec3<T> &v) { x += v.x, y += v.y, z += v.z; return *this; }
-	Vec3<T>& operator *= (const Vec3<T> &v) { x *= v.x, y *= v.y, z *= v.z; return *this; }
-	Vec3<T> operator - () const { return Vec3<T>(-x, -y, -z); }
-	T length2() const { return x * x + y * y + z * z; }
-	T length() const { return sqrt(length2()); }
-	friend std::ostream & operator << (std::ostream &os, const Vec3<T> &v)
-	{
-		os << "[" << v.x << " " << v.y << " " << v.z << "]";
-		return os;
-	}
-};
-
 typedef Vec3<float> Vec3f;
-
-class Sphere
-{
-public:
-	Vec3f center;                           /// position of the sphere
-	float radius, radius2;                  /// sphere radius and radius^2
-	Vec3f surfaceColor, emissionColor;      /// surface color and emission (light)
-	float transparency, reflection;         /// surface transparency and reflectivity
-	Sphere(
-		const Vec3f &c,
-		const float &r,
-		const Vec3f &sc,
-		const float &refl = 0,
-		const float &transp = 0,
-		const Vec3f &ec = 0) :
-		center(c), radius(r), radius2(r * r), surfaceColor(sc), emissionColor(ec),
-		transparency(transp), reflection(refl)
-	{ /* empty */
-	}
-	//[comment]
-	// Compute a ray-sphere intersection using the geometric solution
-	//[/comment]
-	bool intersect(const Vec3f &rayorig, const Vec3f &raydir, float &t0, float &t1) const
-	{
-		Vec3f l = center - rayorig; //line from ray origin to sphere centre
-		float tca = l.dot(raydir); //dot product the line with ray direction
-		if (tca < 0) return false; //if dot product is negative, they face away from each other so negative
-		float d2 = l.dot(l) - tca * tca; //how far the direction vector is from the centre (squared)
-		if (d2 > radius2) return false; //if its further than the radius, return false
-		float thc = sqrt(radius2 - d2); //how far on the radius the hit is
-		t0 = tca - thc; //distance to entry point
-		t1 = tca + thc; //distance to exit point
-
-		return true;
-	}
-};
 
 //[comment]
 // This variable controls the maximum recursion depth
@@ -353,28 +286,38 @@ void SimpleShrinking()
 
 void SmoothScaling()
 {
-	std::vector<Sphere> spheres;
+	//pool of 4 spheres initialized - allocates memory
+	MemoryPool<Sphere> *spherePool = new MemoryPool<Sphere>(4);
+
+	//construct 3 spheres in the pool
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
+	Sphere* sphere1 = new (spherePool) Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0);
+	//Sphere* sphere2 = new (spherePool) Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0);
+	//Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
+	
 
 	for (float r = 0; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 
-		spheres.push_back(Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
-		spheres.push_back(Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5)); // Radius++ change here
-		spheres.push_back(Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
-		spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
-		render(spheres, r);
+		//construct the dynamic sphere
+		//Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
+
+		//render(spherePool, r);
 
 		auto finish = std::chrono::steady_clock::now();
 		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
 
 		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
 
-		// Dont forget to clear the Vector holding the spheres.
-		spheres.clear();
+		
+
+		// Release the dynamic sphere
+		//spherePool->ReleaseLast();
 
 	}
+	//release all the spheres and delete the memory pool. this calls the destructor, releasing all the objects within it.
+	//delete spherePool;
 }
 //[comment]
 // In the main function, we will create the scene which is composed of 5 spheres
