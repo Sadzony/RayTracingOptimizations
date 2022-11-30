@@ -1,2 +1,4 @@
-
+**/RayTracerFramework/.vs/
+**/PlayStationRayTracer/.vs/
 *.ppm
+*.ipch
