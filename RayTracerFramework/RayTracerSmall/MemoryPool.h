@@ -1,6 +1,13 @@
 #pragma once
 #include "MemoryDebugger.h"
-#include <vector>
+
+//custom std::destroy_at since its not available??
+template <typename T>
+constexpr void destroy_at(T* p)
+{
+	p->~T();
+}
+
 template<class T>
 class MemoryPool
 {
@@ -17,10 +24,6 @@ public:
 		m_poolMaxObjCount = poolMaxObjCount;
 		m_objectSize = sizeof(T);
 
-		#ifdef _DEBUG
-		m_objectSize += sizeof(Footer) + sizeof(Header);
-		#endif // _DEBUG
-
 		m_poolMaxByteSize = m_objectSize * m_poolMaxObjCount;
 
 		//allocate m_poolMaxByteSize amount of memory
@@ -33,12 +36,14 @@ public:
 	~MemoryPool()
 	{
 		ReleaseObjects();
+		free(memoryPoolBlockStart);
 		#ifdef _DEBUG
 		HeapManager::GetHeapByIndex((int)HeapID::Graphics)->SubtractBytes(m_poolMaxByteSize);
 		#endif // _DEBUG
 	}
 	void ReleaseObjects()
 	{
+		//release all objects
 		for (int i = 0; i < count() - 1; i++) {
 			ReleaseLast();
 		}
@@ -46,12 +51,27 @@ public:
 	void ReleaseLast()
 	{
 		//get the last object and call its destructor
-		T* obj = GetAt(count() - 1);
-		obj->~T();
+		T* obj = GetAt(m_objectCount - 1);
+		destroy_at(obj);
+		Decrement();
+		
+	}
+	void ReleaseAt(int pos) 
+	{
+		T* obj = GetAt(pos);
+		destroy_at(obj);
+		Decrement();
 	}
 	T* GetAt(int pos) {
-		//different depending on whether in debug mode or not
-		return nullptr;
+		
+		if (pos > m_objectCount) {
+			//error - index out of range
+			return nullptr;
+		}
+		size_t bytesToMove = pos * m_objectSize;
+		void* mempntr = (void*)((char*)memoryPoolBlockStart + bytesToMove);
+		T* object = (T*)mempntr;
+		return object;
 	}
 	int count() { return m_objectCount; }
 
@@ -63,30 +83,20 @@ public:
 
 	void* GetPoolMemBlock() { return memoryPoolBlockStart; }
 
-	//list storing object pointers
-	std::vector<void*> pointerList;
-	void AddPointer(void* obj)
-	{
-		pointerList.push_back(obj);
-		m_objectCount++;
-	}
+	void Increment() { m_objectCount++; }
+	void Decrement() { m_objectCount--; }
+
+	
 
 //new and delete overrides
 public:
 #ifdef _DEBUG
 	//new operator only changes in debug mode
-	static void* operator new (size_t size) 
+	void* operator new (size_t size) 
 	{
 		return ::operator new(size, HeapID::Graphics);
 	}
 #endif
-	//delete operator frees the allocated 
-	static void operator delete(void* p, size_t size) 
-	{
-		//free the allocated memory pool block
-		::operator delete(p);
-	}
-
 };
 
 //Memory pool new and delete overloads
@@ -94,9 +104,6 @@ template<typename T>
 void* operator new (size_t size, MemoryPool<T>* pool) 
 {
 	size_t requestedBytes = size;
-	#ifdef _DEBUG
-	requestedBytes += sizeof(Header) + sizeof(Footer);
-	#endif
 
 	if (pool->count() + 1 > pool->GetMaxCount()) {
 		//error: pool is full
@@ -109,36 +116,17 @@ void* operator new (size_t size, MemoryPool<T>* pool)
 	
 	void* thisMemBlock = pool->GetPoolMemBlock();
 	thisMemBlock = (void*)((char*)thisMemBlock + (pool->GetObjectSize() * pool->count()));
-#ifdef _DEBUG
-	Header* pHeader = (Header*)thisMemBlock; //header pointer is at the start of memory block
-	pHeader->m_heap = HeapManager::GetHeapByIndex((int)HeapID::Graphics);
-	pHeader->m_dataSize = size; //value of size in header equal to size of requested data 
-	pHeader->m_totalDataSize = requestedBytes;
-	pHeader->m_id = HeapID::Graphics;
-	pHeader->checkValue = 0xDEED;
+	
+	pool->Increment();
 
-
-	//set up linked list
-	Header* last = pHeader->m_heap->GetLast();
-	last->next = pHeader;
-	pHeader->previous = last;
-	pHeader->m_heap->SetLast(pHeader);
-	pHeader->next = nullptr;
-
-	void* pFooterAddress = (void*)((char*)thisMemBlock + sizeof(Header) + size); //address of footer is past the header data and variable data
-	Footer* pFooter = (Footer*)pFooterAddress;
-	pFooter->m_id = HeapID::Graphics;
-	pFooter->checkValue = 0xFEED;
-	thisMemBlock = (void*)((char*)thisMemBlock + sizeof(Header));
-#endif // DEBUG
-	pool->AddPointer(thisMemBlock);
 	return thisMemBlock;
 }
 
 template<typename T>
 void operator delete (void* pMem, MemoryPool<T>* pool) 
 {
-
+	//release the object rather than deleting it
+	T* obj = (T*)pMem;
+	destroy_at(obj);
 }
-
 

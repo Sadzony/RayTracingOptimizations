@@ -5,117 +5,141 @@ D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(101,19): w
 D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(107,60): warning C4305: 'argument': truncation from 'double' to 'const float'
 D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(107,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
 D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(127,19): warning C4305: 'initializing': truncation from 'double' to 'float'
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(182,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(226,81): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(176,25): warning C4018: '<': signed/unsigned mismatch
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(196,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(202,60): warning C4305: 'argument': truncation from 'double' to 'const float'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(202,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(222,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(236,26): warning C4018: '<': signed/unsigned mismatch
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(243,28): warning C4018: '<': signed/unsigned mismatch
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(279,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(324,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(364,81): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(227,72): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(365,72): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(228,73): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(366,73): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(229,72): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(367,72): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(253,83): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(391,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(254,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(392,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(255,75): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(393,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(256,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(394,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(261,83): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(399,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(262,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(400,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(263,75): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(401,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(264,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(402,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(268,83): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(406,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(269,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(407,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(270,75): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(408,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(271,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(409,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(275,83): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(413,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(276,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(414,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(277,75): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(415,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(278,74): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(416,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(294,98): warning C4305: 'argument': truncation from 'double' to 'T'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(432,98): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(30,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(14): message : while compiling class template member function 'MemoryPool<Sphere>::MemoryPool(int)'
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(290): message : see reference to function template instantiation 'MemoryPool<Sphere>::MemoryPool(int)' being compiled
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(290): message : see reference to class template instantiation 'MemoryPool<Sphere>' being compiled
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(115,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(294): message : see reference to function template instantiation 'void *operator new<Sphere>(size_t,MemoryPool<Sphere> *)' being compiled
-D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(116,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(433,90): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(434,89): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(442,96): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(444,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(41,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(37): message : while compiling class template member function 'MemoryPool<Sphere>::~MemoryPool(void)'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(100): message : see reference to function template instantiation 'MemoryPool<Sphere>::~MemoryPool(void)' being compiled
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(176): message : see reference to class template instantiation 'MemoryPool<Sphere>' being compiled
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(33,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(21): message : while compiling class template member function 'MemoryPool<Sphere>::MemoryPool(int)'
+D:\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(428): message : see reference to function template instantiation 'MemoryPool<Sphere>::MemoryPool(int)' being compiled
   RayTracerSmall.vcxproj -> D:\RayTracingOptimizations\RayTracerFramework\x64\Debug\RayTracerSmall.exe

@@ -161,6 +161,103 @@ Vec3f trace(
 
 	return surfaceColor + sphere->emissionColor;
 }
+/////////////////////////////////////////////////////// my edit
+Vec3f trace(
+	const Vec3f& rayorig,
+	const Vec3f& raydir,
+	MemoryPool<Sphere>* spheres,
+	const int& depth)
+{
+	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
+	float tnear = INFINITY;
+	const Sphere* sphere = NULL;
+	// find intersection of this ray with the sphere in the scene
+	
+	for (unsigned i = 0; i < spheres->count(); ++i) {
+		float t0 = INFINITY, t1 = INFINITY;
+		if ((*spheres->GetAt(i)).intersect(rayorig, raydir, t0, t1)) {
+			if (t0 < 0) t0 = t1;
+			if (t0 < tnear) {
+				tnear = t0;
+				sphere = spheres->GetAt(i);
+			}
+		}
+	}
+	// if there's no intersection return black or background color
+	if (!sphere) return Vec3f(2);
+	Vec3f surfaceColor = 0; // color of the ray/surfaceof the object intersected by the ray
+	Vec3f phit = rayorig + raydir * tnear; // point of intersection
+	Vec3f nhit = phit - sphere->center; // normal at the intersection point
+	nhit.normalize(); // normalize normal direction
+					  // If the normal and the view direction are not opposite to each other
+					  // reverse the normal direction. That also means we are inside the sphere so set
+					  // the inside bool to true. Finally reverse the sign of IdotN which we want
+					  // positive.
+	float bias = 1e-4; // add some bias to the point from which we will be tracing
+	bool inside = false;
+	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
+	if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
+		float facingratio = -raydir.dot(nhit);
+		// change the mix value to tweak the effect
+		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
+		// compute reflection direction (not need to normalize because all vectors
+		// are already normalized)
+
+		Vec3f reflection = 0;
+		Vec3f refraction = 0;
+
+		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
+
+		//if reflective, find reflection
+		if (sphere->reflection) {
+			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
+			refldir.normalize();
+			Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
+			surfaceColor += reflection * fresneleffect;
+		}
+
+
+		// if the sphere is also transparent compute refraction ray (transmission)
+		if (sphere->transparency) {
+			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
+			float cosi = -nhit.dot(raydir);
+			float k = 1 - eta * eta * (1 - cosi * cosi);
+			Vec3f refrdir = raydir * eta + nhit * (eta * cosi - sqrt(k));
+			refrdir.normalize();
+			refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
+			surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
+		}
+
+		// the result is a mix of reflection and refraction (if the sphere is transparent)
+		surfaceColor *= sphere->surfaceColor;
+	}
+	else {
+		// it's a diffuse object, no need to raytrace any further
+		for (unsigned i = 0; i < spheres->count(); ++i) {
+			Sphere temp = *spheres->GetAt(i);
+			if (temp.emissionColor.x > 0) {
+				// this is a light
+				Vec3f transmission = 1;
+				Vec3f lightDirection = temp.center - phit;
+				lightDirection.normalize();
+				for (unsigned j = 0; j < spheres->count(); ++j) {
+					if (i != j) {
+						float t0, t1;
+						if ((*spheres->GetAt(j)).intersect(phit + nhit * bias, lightDirection, t0, t1)) {
+							transmission = 0;
+							break;
+						}
+					}
+				}
+				surfaceColor += sphere->surfaceColor * transmission *
+					std::max(float(0), nhit.dot(lightDirection)) * temp.emissionColor;
+			}
+		}
+	}
+
+	return surfaceColor + sphere->emissionColor;
+}
+
 
 //[comment]
 // Main rendering function. We compute a camera ray for each pixel of the image
@@ -211,10 +308,51 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 			(unsigned char)(std::min(float(1), image[i].z) * 255);
 	}
 	ofs.close();
-#ifdef  _DEBUG
-	HeapManager::GetHeapByIndex(0)->WalkTheHeap();
-	HeapManager::GetHeapByIndex(1)->WalkTheHeap();
-#endif
+	delete[] image;
+}
+////////////////////////////////////////////////////////////////////////// my edit
+void render(MemoryPool<Sphere>* spheres, int iteration)
+{
+	// Recommended Testing Resolution
+	unsigned const width = 640, height = 480;
+
+	// Recommended Production Resolution
+	//unsigned width = 1920, height = 1080;
+	Vec3f* image = new Vec3f[width * height], * pixel = image; //array of colors
+	float invWidth = 2 / float(width), invHeight = 2 / float(height); //optimization: rather than multiplying by 2 on every iteration, just do it here once.
+	float fov = 30, aspectratio = width / float(height);
+	float angle = tan(M_PI * 0.5 * fov / 180.);
+	float angleAndAspect = angle * aspectratio;
+
+
+	// Trace rays
+	Vec3f zero = Vec3f(0);
+	for (unsigned y = 0; y < height; ++y) {
+		for (unsigned x = 0; x < width; ++x, ++pixel) {
+			//optimization: removing "+0.5" from xx and yy didnt make a difference to the output image
+			float xx = (x * invWidth - 1) * angleAndAspect;
+			float yy = (1 - y * invHeight) * angle;
+			Vec3f raydir(xx, yy, -1);
+			raydir.normalize();
+			*pixel = trace(zero, raydir, spheres, 0);
+		}
+	}
+
+
+	// Save result to a PPM image (keep these flags if you compile under Windows)
+	std::stringstream ss;
+	ss << "./spheres" << iteration << ".ppm";
+	std::string tempString = ss.str();
+	char* filename = (char*)tempString.c_str();
+
+	std::ofstream ofs(filename, std::ios::out | std::ios::binary);
+	ofs << "P6\n" << width << " " << height << "\n255\n";
+	for (unsigned i = 0; i < width * height; ++i) {
+		ofs << (unsigned char)(std::min(float(1), image[i].x) * 255) <<
+			(unsigned char)(std::min(float(1), image[i].y) * 255) <<
+			(unsigned char)(std::min(float(1), image[i].z) * 255);
+	}
+	ofs.close();
 	delete[] image;
 }
 
@@ -292,8 +430,8 @@ void SmoothScaling()
 	//construct 3 spheres in the pool
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
 	Sphere* sphere1 = new (spherePool) Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0);
-	//Sphere* sphere2 = new (spherePool) Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0);
-	//Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
+	Sphere* sphere2 = new (spherePool) Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0);
+	Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
 	
 
 	for (float r = 0; r <= 100; r++)
@@ -301,9 +439,9 @@ void SmoothScaling()
 		auto start = std::chrono::steady_clock::now();
 
 		//construct the dynamic sphere
-		//Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
+		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
 
-		//render(spherePool, r);
+		render(spherePool, r);
 
 		auto finish = std::chrono::steady_clock::now();
 		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
@@ -313,11 +451,13 @@ void SmoothScaling()
 		
 
 		// Release the dynamic sphere
-		//spherePool->ReleaseLast();
-
+		spherePool->ReleaseLast();
 	}
+	//HeapManager::GetHeapByIndex((int)HeapID::Default)->WalkTheHeap();
+	//HeapManager::GetHeapByIndex((int)HeapID::Graphics)->WalkTheHeap();
 	//release all the spheres and delete the memory pool. this calls the destructor, releasing all the objects within it.
-	//delete spherePool;
+	delete spherePool;
+
 }
 //[comment]
 // In the main function, we will create the scene which is composed of 5 spheres
@@ -328,9 +468,9 @@ int main(int argc, char **argv)
 {
 	// This sample only allows one choice per program execution. Feel free to improve upon this
 	srand(13);
-	BasicRender();
+	//BasicRender();
 	//SimpleShrinking();
-	//SmoothScaling();
+	SmoothScaling();
 
 #ifdef  _DEBUG
 	HeapManager::CleanUp();
