@@ -55,7 +55,7 @@ typedef Vec3<float> Vec3f;
 //[/comment]
 #define MAX_RAY_DEPTH 5
 
-float mix(const float &a, const float &b, const float &mix)
+float mix(const float& a, const float& b, const float& mix)
 {
 	return b * mix + a * (1 - mix);
 }
@@ -71,10 +71,10 @@ float mix(const float &a, const float &b, const float &mix)
 // the background color.
 //[/comment]
 Vec3f trace(
-	const Vec3f &rayorig,
-	const Vec3f &raydir,
-	const std::vector<Sphere> &spheres,
-	const int &depth)
+	const Vec3f& rayorig,
+	const Vec3f& raydir,
+	const std::vector<Sphere>& spheres,
+	const int& depth)
 {
 	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
 	float tnear = INFINITY;
@@ -96,10 +96,10 @@ Vec3f trace(
 	Vec3f phit = rayorig + raydir * tnear; // point of intersection
 	Vec3f nhit = phit - sphere->center; // normal at the intersection point
 	nhit.normalize(); // normalize normal direction
-					  // If the normal and the view direction are not opposite to each other
-					  // reverse the normal direction. That also means we are inside the sphere so set
-					  // the inside bool to true. Finally reverse the sign of IdotN which we want
-					  // positive.
+	// If the normal and the view direction are not opposite to each other
+	// reverse the normal direction. That also means we are inside the sphere so set
+	// the inside bool to true. Finally reverse the sign of IdotN which we want
+	// positive.
 	float bias = 1e-4; // add some bias to the point from which we will be tracing
 	bool inside = false;
 	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
@@ -129,7 +129,7 @@ Vec3f trace(
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
 			float cosi = -nhit.dot(raydir);
 			float k = 1 - eta * eta * (1 - cosi * cosi);
-			Vec3f refrdir = raydir * eta + nhit * (eta *  cosi - sqrt(k));
+			Vec3f refrdir = raydir * eta + nhit * (eta * cosi - sqrt(k));
 			refrdir.normalize();
 			refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
 			surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
@@ -174,7 +174,7 @@ Vec3f trace(
 	float tnear = INFINITY;
 	const Sphere* sphere = NULL;
 	// find intersection of this ray with the sphere in the scene
-	
+
 	for (unsigned i = 0; i < spheres->count(); ++i) {
 		float t0 = INFINITY, t1 = INFINITY;
 		if ((*spheres->GetAt(i)).intersect(rayorig, raydir, t0, t1)) {
@@ -191,10 +191,10 @@ Vec3f trace(
 	Vec3f phit = rayorig + raydir * tnear; // point of intersection
 	Vec3f nhit = phit - sphere->center; // normal at the intersection point
 	nhit.normalize(); // normalize normal direction
-					  // If the normal and the view direction are not opposite to each other
-					  // reverse the normal direction. That also means we are inside the sphere so set
-					  // the inside bool to true. Finally reverse the sign of IdotN which we want
-					  // positive.
+	// If the normal and the view direction are not opposite to each other
+	// reverse the normal direction. That also means we are inside the sphere so set
+	// the inside bool to true. Finally reverse the sign of IdotN which we want
+	// positive.
 	float bias = 1e-4; // add some bias to the point from which we will be tracing
 	bool inside = false;
 	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
@@ -266,7 +266,7 @@ Vec3f trace(
 // trace it and return a color. If the ray hits a sphere, we return the color of the
 // sphere at the intersection point, else we return the background color.
 //[/comment]
-void render(const std::vector<Sphere> &spheres, int iteration)
+void render(const std::vector<Sphere>& spheres, int iteration)
 {
 
 
@@ -275,7 +275,7 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 
 	// Recommended Production Resolution
 	unsigned width = 1920, height = 1080;
-	Vec3f *image = new Vec3f[width * height], *pixel = image; //array of colors
+	Vec3f* image = new Vec3f[width * height], * pixel = image; //array of colors
 	float invWidth = 2 / float(width), invHeight = 2 / float(height); //optimization: rather than multiplying by 2 on every iteration, just do it here once.
 	float fov = 30, aspectratio = width / float(height);
 	float angle = tan(M_PI * 0.5 * fov / 180.);
@@ -325,7 +325,7 @@ void threadedRender(const MemoryPool<Sphere>* spheres, Vec3f* pImage, std::mutex
 	//find subdivision location
 	double YFraction = (double)height / maxSubdivisions;
 	int startIndex = YFraction * thisSubdivision;
-	int endIndex = YFraction * (thisSubdivision+1);
+	int endIndex = YFraction * (thisSubdivision + 1);
 
 	//find the start position of the pointer
 	pixel = (Vec3f*)((char*)pixel + (startIndex * width * sizeof(Vec3f)));
@@ -341,14 +341,14 @@ void threadedRender(const MemoryPool<Sphere>* spheres, Vec3f* pImage, std::mutex
 			Vec3f raydir(xx, yy, -1);
 			raydir.normalize();
 			Vec3f temp = trace(zero, raydir, spheres, 0);
-			//(*data).lock();
+			(*data).lock();
 			*pixel = temp;
-			//(*data).unlock();
+			(*data).unlock();
 		}
 	}
 
 }
-void FileCreation(unsigned const width, unsigned const height, Vec3f* image, int iteration) 
+void FileCreation(unsigned const width, unsigned const height, Vec3f* image, int iteration)
 {
 	// Save result to a PPM image (keep these flags if you compile under Windows)
 	std::stringstream ss;
@@ -377,14 +377,14 @@ void BasicRender()
 	spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
 
 	auto start = std::chrono::system_clock::now();
-	
+
 	// This creates a file, titled 1.ppm in the current working directory
 	render(spheres, 1);
 	auto finish = std::chrono::system_clock::now();
 	double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
 
 	std::cout << "Rendered and saved spheres" << 1 << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
-	
+
 	spheres.clear();
 
 }
@@ -435,7 +435,7 @@ void SimpleShrinking()
 void SmoothScaling()
 {
 	//pool of 4 spheres initialized - allocates memory
-	MemoryPool<Sphere> *spherePool = new MemoryPool<Sphere>(4);
+	MemoryPool<Sphere>* spherePool = new MemoryPool<Sphere>(4);
 
 	//construct 3 spheres in the pool
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
@@ -448,10 +448,11 @@ void SmoothScaling()
 
 	// Recommended Production Resolution
 	unsigned width = 1920, height = 1080;
+	int concurrency = std::thread::hardware_concurrency();
+	std::vector<std::thread> threadList;
 
 
-
-	for (float r = 0; r <= 100; r++)
+	for (float r = 90; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 
@@ -464,24 +465,15 @@ void SmoothScaling()
 		Vec3f* image = new Vec3f[width * height];
 
 		//create a couple threads based on concurrency value
-		std::thread thread1(threadedRender, spherePool, image, &data, 8, 0, width, height);
-		std::thread thread2(threadedRender, spherePool, image, &data, 8, 1, width, height);
-		std::thread thread3(threadedRender, spherePool, image, &data, 8, 2, width, height);
-		std::thread thread4(threadedRender, spherePool, image, &data, 8, 3, width, height);
-		std::thread thread5(threadedRender, spherePool, image, &data, 8, 4, width, height);
-		std::thread thread6(threadedRender, spherePool, image, &data, 8, 5, width, height);
-		std::thread thread7(threadedRender, spherePool, image, &data, 8, 6, width, height);
-		std::thread thread8(threadedRender, spherePool, image, &data, 8, 7, width, height);
 
-		//join all the threads here
-		thread1.join();
-		thread2.join();
-		thread3.join();
-		thread4.join();
-		thread5.join();
-		thread6.join();
-		thread7.join();
-		thread8.join();
+		for (int i = 0; i < concurrency; i++) {
+			threadList.push_back(std::thread(threadedRender, spherePool, image, &data, concurrency, i, width, height));
+		}
+		for (int i = 0; i < threadList.size(); i++)
+		{
+			threadList[i].join();
+		}
+
 
 		//create the file here
 		FileCreation(width, height, image, r);
@@ -491,17 +483,20 @@ void SmoothScaling()
 
 		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
 
-		
+
 
 		// Release the dynamic sphere
 		spherePool->ReleaseLast();
+
+		//clear the thread list
+		threadList.clear();
 	}
 
-	#ifdef _DEBUG
-	HeapManager::GetHeapByIndex((int)HeapID::Default)->WalkTheHeap();
+#ifdef _DEBUG
+
 	std::cout << std::endl;
 	HeapManager::GetHeapByIndex((int)HeapID::Graphics)->WalkTheHeap();
-	#endif // DEBUG
+#endif // DEBUG
 
 
 	//release all the spheres and delete the memory pool. this calls the destructor, releasing all the objects within it.
@@ -512,7 +507,7 @@ void SmoothScalingOriginal()
 {
 	std::vector<Sphere> spheres;
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
-	for (float r = 0; r <= 100; r++)
+	for (float r = 95; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 		spheres.push_back(Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
@@ -532,14 +527,14 @@ void SmoothScalingOriginal()
 // and 1 light (which is also a sphere). Then, once the scene description is complete
 // we render that scene, by calling the render() function.
 //[/comment]
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	// This sample only allows one choice per program execution. Feel free to improve upon this
 	srand(13);
 	//BasicRender();
 	//SimpleShrinking();
-	SmoothScaling();
-	//SmoothScalingOriginal();
+	//SmoothScaling();
+	SmoothScalingOriginal();
 
 #ifdef  _DEBUG
 	HeapManager::CleanUp();
