@@ -341,6 +341,7 @@ void threadedRender(const MemoryPool<Sphere>* spheres, Vec3f* pImage, std::mutex
 			Vec3f raydir(xx, yy, -1);
 			raydir.normalize();
 			Vec3f temp = trace(zero, raydir, spheres, 0);
+			//the threads don't fight over this resource, the mutex is not actually needed!
 			//(*data).lock();
 			*pixel = temp;
 			//(*data).unlock();
