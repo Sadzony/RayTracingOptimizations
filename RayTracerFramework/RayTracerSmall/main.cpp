@@ -449,7 +449,16 @@ void SmoothScaling()
 	// Recommended Production Resolution
 	unsigned width = 1920, height = 1080;
 	int concurrency = std::thread::hardware_concurrency();
-	std::vector<std::thread> threadList;
+	std::vector<std::thread*> threadList;
+	//create the array of pixels and a mutex for it.
+	std::mutex data;
+	Vec3f* image = new Vec3f[width * height];
+	
+	//initialize the thread list
+	for (int i = 0; i < concurrency; i++) {
+		std::thread* t = new std::thread();
+		threadList.push_back(t);
+	}
 
 	for (float r = 0; r <= 100; r++)
 	{
@@ -459,18 +468,16 @@ void SmoothScaling()
 		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
 
 
-		//create the array of pixels and a mutex for it.
-		std::mutex data;
-		Vec3f* image = new Vec3f[width * height];
+
 
 		//create a couple threads based on concurrency value
 
-		for (int i = 0; i < threadList.size(); i++) {
-			threadList[i] = std::thread(threadedRender, spherePool, image, &data, concurrency, i, width, height);
+		for (int i = 0; i < concurrency; i++) {
+			*threadList[i] = std::thread(threadedRender, spherePool, image, &data, concurrency, i, width, height);
 		}
-		for (int i = 0; i < threadList.size(); i++)
+		for (int i = 0; i < concurrency; i++)
 		{
-			threadList[i].join();
+			threadList[i]->join();
 		}
 
 
@@ -488,13 +495,14 @@ void SmoothScaling()
 		spherePool->ReleaseLast();
 	}
 
+
 #ifdef _DEBUG
 
 	std::cout << std::endl;
 	HeapManager::GetHeapByIndex((int)HeapID::Graphics)->WalkTheHeap();
 #endif // DEBUG
 
-
+	delete image;
 	//release all the spheres and delete the memory pool. this calls the destructor, releasing all the objects within it.
 	delete spherePool;
 
@@ -525,12 +533,19 @@ void SmoothScalingOriginal()
 //[/comment]
 int main(int argc, char** argv)
 {
+	auto start = std::chrono::steady_clock::now();
+
+
 	// This sample only allows one choice per program execution. Feel free to improve upon this
 	srand(13);
 	//BasicRender();
 	//SimpleShrinking();
-	SmoothScaling();
-	//SmoothScalingOriginal();
+	//SmoothScaling();
+	SmoothScalingOriginal();
+
+	auto finish = std::chrono::steady_clock::now();
+	double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
+	std::cout << std::endl << "The entire process took " << elapsedSeconds << "s" << std::endl;
 
 #ifdef  _DEBUG
 	HeapManager::CleanUp();
