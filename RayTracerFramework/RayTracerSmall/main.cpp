@@ -34,6 +34,8 @@
 #include <sstream>
 #include <string.h>
 #include <chrono>
+#include <thread>
+#include <mutex>
 
 #include "MemoryDebugger.h"
 #include "MemoryPool.h"
@@ -165,7 +167,7 @@ Vec3f trace(
 Vec3f trace(
 	const Vec3f& rayorig,
 	const Vec3f& raydir,
-	MemoryPool<Sphere>* spheres,
+	const MemoryPool<Sphere>* spheres,
 	const int& depth)
 {
 	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
@@ -269,10 +271,10 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 
 
 	// Recommended Testing Resolution
-	unsigned const width = 640, height = 480;
+	//unsigned const width = 640, height = 480;
 
 	// Recommended Production Resolution
-	//unsigned width = 1920, height = 1080;
+	unsigned width = 1920, height = 1080;
 	Vec3f *image = new Vec3f[width * height], *pixel = image; //array of colors
 	float invWidth = 2 / float(width), invHeight = 2 / float(height); //optimization: rather than multiplying by 2 on every iteration, just do it here once.
 	float fov = 30, aspectratio = width / float(height);
@@ -311,34 +313,43 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 	delete[] image;
 }
 ////////////////////////////////////////////////////////////////////////// my edit
-void render(MemoryPool<Sphere>* spheres, int iteration)
+void threadedRender(const MemoryPool<Sphere>* spheres, Vec3f* pImage, std::mutex* data, const int maxSubdivisions, const int thisSubdivision, unsigned const width, unsigned const height)
 {
-	// Recommended Testing Resolution
-	unsigned const width = 640, height = 480;
 
-	// Recommended Production Resolution
-	//unsigned width = 1920, height = 1080;
-	Vec3f* image = new Vec3f[width * height], * pixel = image; //array of colors
+	Vec3f* pixel = pImage; //copy of pointer to be used for iteration
 	float invWidth = 2 / float(width), invHeight = 2 / float(height); //optimization: rather than multiplying by 2 on every iteration, just do it here once.
 	float fov = 30, aspectratio = width / float(height);
 	float angle = tan(M_PI * 0.5 * fov / 180.);
 	float angleAndAspect = angle * aspectratio;
 
+	//find subdivision location
+	double YFraction = (double)height / maxSubdivisions;
+	int startIndex = YFraction * thisSubdivision;
+	int endIndex = YFraction * (thisSubdivision+1);
+
+	//find the start position of the pointer
+	pixel = (Vec3f*)((char*)pixel + (startIndex * width * sizeof(Vec3f)));
+
 
 	// Trace rays
 	Vec3f zero = Vec3f(0);
-	for (unsigned y = 0; y < height; ++y) {
+	for (unsigned y = startIndex; y < endIndex; ++y) {
 		for (unsigned x = 0; x < width; ++x, ++pixel) {
 			//optimization: removing "+0.5" from xx and yy didnt make a difference to the output image
 			float xx = (x * invWidth - 1) * angleAndAspect;
 			float yy = (1 - y * invHeight) * angle;
 			Vec3f raydir(xx, yy, -1);
 			raydir.normalize();
-			*pixel = trace(zero, raydir, spheres, 0);
+			Vec3f temp = trace(zero, raydir, spheres, 0);
+			//(*data).lock();
+			*pixel = temp;
+			//(*data).unlock();
 		}
 	}
 
-
+}
+void FileCreation(unsigned const width, unsigned const height, Vec3f* image, int iteration) 
+{
 	// Save result to a PPM image (keep these flags if you compile under Windows)
 	std::stringstream ss;
 	ss << "./spheres" << iteration << ".ppm";
@@ -353,7 +364,6 @@ void render(MemoryPool<Sphere>* spheres, int iteration)
 			(unsigned char)(std::min(float(1), image[i].z) * 255);
 	}
 	ofs.close();
-	delete[] image;
 }
 
 void BasicRender()
@@ -432,16 +442,49 @@ void SmoothScaling()
 	Sphere* sphere1 = new (spherePool) Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0);
 	Sphere* sphere2 = new (spherePool) Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0);
 	Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
-	
 
-	for (float r = 90; r <= 100; r++)
+	// Recommended Testing Resolution
+	//unsigned const width = 640, height = 480;
+
+	// Recommended Production Resolution
+	unsigned width = 1920, height = 1080;
+
+
+
+	for (float r = 0; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 
 		//construct the dynamic sphere
 		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
 
-		render(spherePool, r);
+
+		//create the array of pixels and a mutex for it.
+		std::mutex data;
+		Vec3f* image = new Vec3f[width * height];
+
+		//create a couple threads based on concurrency value
+		std::thread thread1(threadedRender, spherePool, image, &data, 8, 0, width, height);
+		std::thread thread2(threadedRender, spherePool, image, &data, 8, 1, width, height);
+		std::thread thread3(threadedRender, spherePool, image, &data, 8, 2, width, height);
+		std::thread thread4(threadedRender, spherePool, image, &data, 8, 3, width, height);
+		std::thread thread5(threadedRender, spherePool, image, &data, 8, 4, width, height);
+		std::thread thread6(threadedRender, spherePool, image, &data, 8, 5, width, height);
+		std::thread thread7(threadedRender, spherePool, image, &data, 8, 6, width, height);
+		std::thread thread8(threadedRender, spherePool, image, &data, 8, 7, width, height);
+
+		//join all the threads here
+		thread1.join();
+		thread2.join();
+		thread3.join();
+		thread4.join();
+		thread5.join();
+		thread6.join();
+		thread7.join();
+		thread8.join();
+
+		//create the file here
+		FileCreation(width, height, image, r);
 
 		auto finish = std::chrono::steady_clock::now();
 		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
@@ -465,6 +508,25 @@ void SmoothScaling()
 	delete spherePool;
 
 }
+void SmoothScalingOriginal()
+{
+	std::vector<Sphere> spheres;
+	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
+	for (float r = 0; r <= 100; r++)
+	{
+		auto start = std::chrono::steady_clock::now();
+		spheres.push_back(Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
+		spheres.push_back(Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5)); // Radius++ change here
+		spheres.push_back(Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
+		spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
+		render(spheres, r);
+		auto finish = std::chrono::steady_clock::now();
+		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
+		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
+		// Dont forget to clear the Vector holding the spheres.
+		spheres.clear();
+	}
+}
 //[comment]
 // In the main function, we will create the scene which is composed of 5 spheres
 // and 1 light (which is also a sphere). Then, once the scene description is complete
@@ -477,6 +539,7 @@ int main(int argc, char **argv)
 	//BasicRender();
 	//SimpleShrinking();
 	SmoothScaling();
+	//SmoothScalingOriginal();
 
 #ifdef  _DEBUG
 	HeapManager::CleanUp();

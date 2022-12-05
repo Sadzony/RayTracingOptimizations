@@ -112,7 +112,7 @@ public:
 		destroy_at(obj);
 		Decrement();
 	}
-	T* GetAt(int pos) {
+	T* GetAt(int pos) const {
 		
 		if (pos > m_objectCount) {
 			//error - index out of range
@@ -127,15 +127,15 @@ public:
 		T* object = (T*)mempntr;
 		return object;
 	}
-	int count() { return m_objectCount; }
+	int count() const { return m_objectCount; }
 
-	size_t GetObjectSize() { return m_objectSize; }
+	size_t GetObjectSize() const { return m_objectSize; }
 
-	size_t GetMaxByteSize() { return m_poolMaxByteSize;  }
+	size_t GetMaxByteSize() const { return m_poolMaxByteSize;  }
 
-	int GetMaxCount() { return m_poolMaxObjCount; }
+	int GetMaxCount() const { return m_poolMaxObjCount; }
 
-	void* GetPoolMemBlock() { return memoryPoolBlockStart; }
+	void* GetPoolMemBlock() const { return memoryPoolBlockStart; }
 
 	void Increment() { m_objectCount++; }
 	void Decrement() { m_objectCount--; }
