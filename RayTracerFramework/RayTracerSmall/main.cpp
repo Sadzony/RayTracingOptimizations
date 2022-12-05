@@ -434,7 +434,7 @@ void SmoothScaling()
 	Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
 	
 
-	for (float r = 0; r <= 100; r++)
+	for (float r = 90; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 
@@ -453,8 +453,14 @@ void SmoothScaling()
 		// Release the dynamic sphere
 		spherePool->ReleaseLast();
 	}
-	//HeapManager::GetHeapByIndex((int)HeapID::Default)->WalkTheHeap();
-	//HeapManager::GetHeapByIndex((int)HeapID::Graphics)->WalkTheHeap();
+
+	#ifdef _DEBUG
+	HeapManager::GetHeapByIndex((int)HeapID::Default)->WalkTheHeap();
+	std::cout << std::endl;
+	HeapManager::GetHeapByIndex((int)HeapID::Graphics)->WalkTheHeap();
+	#endif // DEBUG
+
+
 	//release all the spheres and delete the memory pool. this calls the destructor, releasing all the objects within it.
 	delete spherePool;
 

@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\RayTracingOptimizations\RayTracerFramework\x64\Release\RayTracerSmall.exe</FullPath>
+      <FullPath>C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\x64\Release\RayTracerSmall.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
