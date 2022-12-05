@@ -341,9 +341,9 @@ void threadedRender(const MemoryPool<Sphere>* spheres, Vec3f* pImage, std::mutex
 			Vec3f raydir(xx, yy, -1);
 			raydir.normalize();
 			Vec3f temp = trace(zero, raydir, spheres, 0);
-			(*data).lock();
+			//(*data).lock();
 			*pixel = temp;
-			(*data).unlock();
+			//(*data).unlock();
 		}
 	}
 
@@ -436,7 +436,7 @@ void SmoothScaling()
 {
 	//pool of 4 spheres initialized - allocates memory
 	MemoryPool<Sphere>* spherePool = new MemoryPool<Sphere>(4);
-
+	
 	//construct 3 spheres in the pool
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
 	Sphere* sphere1 = new (spherePool) Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0);
@@ -451,8 +451,7 @@ void SmoothScaling()
 	int concurrency = std::thread::hardware_concurrency();
 	std::vector<std::thread> threadList;
 
-
-	for (float r = 90; r <= 100; r++)
+	for (float r = 0; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 
@@ -466,8 +465,8 @@ void SmoothScaling()
 
 		//create a couple threads based on concurrency value
 
-		for (int i = 0; i < concurrency; i++) {
-			threadList.push_back(std::thread(threadedRender, spherePool, image, &data, concurrency, i, width, height));
+		for (int i = 0; i < threadList.size(); i++) {
+			threadList[i] = std::thread(threadedRender, spherePool, image, &data, concurrency, i, width, height);
 		}
 		for (int i = 0; i < threadList.size(); i++)
 		{
@@ -487,9 +486,6 @@ void SmoothScaling()
 
 		// Release the dynamic sphere
 		spherePool->ReleaseLast();
-
-		//clear the thread list
-		threadList.clear();
 	}
 
 #ifdef _DEBUG
@@ -507,7 +503,7 @@ void SmoothScalingOriginal()
 {
 	std::vector<Sphere> spheres;
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
-	for (float r = 95; r <= 100; r++)
+	for (float r = 0; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 		spheres.push_back(Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
@@ -533,8 +529,8 @@ int main(int argc, char** argv)
 	srand(13);
 	//BasicRender();
 	//SimpleShrinking();
-	//SmoothScaling();
-	SmoothScalingOriginal();
+	SmoothScaling();
+	//SmoothScalingOriginal();
 
 #ifdef  _DEBUG
 	HeapManager::CleanUp();
