@@ -1,166 +1,170 @@
 ﻿  main.cpp
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(48,1): warning C4005: 'INFINITY': macro redefinition
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_math.h(88): message : see previous definition of 'INFINITY'
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(103,19): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(109,60): warning C4305: 'argument': truncation from 'double' to 'const float'
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(109,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(129,19): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(198,19): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(204,60): warning C4305: 'argument': truncation from 'double' to 'const float'
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(204,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(224,19): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(281,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(322,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(327,17): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(328,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(336,34): warning C4018: '<': signed/unsigned mismatch
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(375,81): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(48,1): warning C4005: 'INFINITY': macro redefinition
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt\corecrt_math.h(88,1): message : see previous definition of 'INFINITY'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(103,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(109,60): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(109,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(129,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(202,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(208,60): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(208,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(228,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(297,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(303,60): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(303,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(327,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(397,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(438,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(443,17): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(444,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(452,34): warning C4018: '<': signed/unsigned mismatch
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(491,81): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(376,72): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(492,72): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(377,73): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(493,73): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(378,72): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(494,72): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(402,83): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(518,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(403,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(519,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(404,75): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(520,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(405,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(521,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(410,83): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(526,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(411,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(527,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(412,75): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(528,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(413,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(529,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(417,83): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(533,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(418,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(534,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(419,75): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(535,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(420,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(536,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(424,83): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(540,83): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(425,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(541,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(426,75): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(542,75): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(427,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(543,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(443,98): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(559,98): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(444,90): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(560,90): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(445,89): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(561,89): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(469,96): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(591,96): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(486,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(518,82): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(608,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(640,82): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(519,79): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(641,79): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(520,74): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(642,74): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(521,73): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(643,73): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(522,19): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(214,13): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
-C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(443): message : see reference to function template instantiation 'void operator delete<Sphere>(void *,MemoryPool<Sphere> *)' being compiled
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(644,19): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(214,13): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(559,107): message : see reference to function template instantiation 'void operator delete<Sphere>(void *,MemoryPool<Sphere> *)' being compiled
   Generating code
-  240 of 428 functions (56.1%) were compiled, the rest were copied from previous compilation.
+  3 of 483 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    9 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  RayTracerSmall.vcxproj -> C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\RayTracerFramework\x64\Release\RayTracerSmall.exe
+  RayTracerSmall.vcxproj -> C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\x64\Release\RayTracerSmall.exe

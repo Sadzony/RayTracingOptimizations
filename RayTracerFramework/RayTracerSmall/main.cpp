@@ -163,6 +163,105 @@ Vec3f trace(
 
 	return surfaceColor + sphere->emissionColor;
 }
+void traceThreadless(
+	const Vec3f& rayorig,
+	const Vec3f& raydir,
+	const std::vector<Sphere*>& spheres,
+	const int& depth,
+	Vec3f& output)
+{
+	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
+	float tnear = INFINITY;
+	const Sphere* sphere = NULL;
+	// find intersection of this ray with the sphere in the scene
+
+	for (unsigned i = 0; i < spheres.size(); ++i) {
+		float t0 = INFINITY, t1 = INFINITY;
+		if (spheres[i]->intersect(rayorig, raydir, t0, t1)) {
+			if (t0 < 0) t0 = t1;
+			if (t0 < tnear) {
+				tnear = t0;
+				sphere = spheres[i];
+			}
+		}
+	}
+	// if there's no intersection return black or background color
+	if (!sphere) {
+		output = Vec3f(2);
+		return;
+	}
+
+	Vec3f surfaceColor = 0; // color of the ray/surfaceof the object intersected by the ray
+	Vec3f phit = rayorig + raydir * tnear; // point of intersection
+	Vec3f nhit = phit - sphere->center; // normal at the intersection point
+	nhit.normalize(); // normalize normal direction
+	// If the normal and the view direction are not opposite to each other
+	// reverse the normal direction. That also means we are inside the sphere so set
+	// the inside bool to true. Finally reverse the sign of IdotN which we want
+	// positive.
+	float bias = 1e-4; // add some bias to the point from which we will be tracing
+	bool inside = false;
+	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
+	if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
+		float facingratio = -raydir.dot(nhit);
+		// change the mix value to tweak the effect
+		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
+		// compute reflection direction (not need to normalize because all vectors
+		// are already normalized)
+
+		Vec3f reflection = 0;
+		Vec3f refraction = 0;
+
+		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
+
+		//if reflective, find reflection
+		if (sphere->reflection > 0) {
+			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
+			refldir.normalize();
+			traceThreadless(phit + nhit * bias, refldir, spheres, depth + 1, reflection);
+			surfaceColor += reflection * fresneleffect;
+		}
+
+
+		// if the sphere is also transparent compute refraction ray (transmission)
+		if (sphere->transparency > 0) {
+			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
+			float cosi = -nhit.dot(raydir);
+			float k = 1 - eta * eta * (1 - cosi * cosi);
+			Vec3f refrdir = raydir * eta + nhit * (eta * cosi - sqrt(k));
+			refrdir.normalize();
+			traceThreadless(phit - nhit * bias, refrdir, spheres, depth + 1, refraction);
+			surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
+		}
+
+		// the result is a mix of reflection and refraction (if the sphere is transparent)
+		surfaceColor *= sphere->surfaceColor;
+	}
+	else {
+		// it's a diffuse object, no need to raytrace any further
+		for (unsigned i = 0; i < spheres.size(); ++i) {
+			Sphere temp = *spheres[i];
+			if (temp.emissionColor.x > 0) {
+				// this is a light
+				Vec3f transmission = 1;
+				Vec3f lightDirection = temp.center - phit;
+				lightDirection.normalize();
+				for (unsigned j = 0; j < spheres.size(); ++j) {
+					if (i != j) {
+						float t0, t1;
+						if (spheres[j]->intersect(phit + nhit * bias, lightDirection, t0, t1)) {
+							transmission = 0;
+							break;
+						}
+					}
+				}
+				surfaceColor += sphere->surfaceColor * transmission *
+					std::max(float(0), nhit.dot(lightDirection)) * temp.emissionColor;
+			}
+		}
+	}
+	output = surfaceColor + sphere->emissionColor;
+}
 /////////////////////////////////////////////////////// my edit
 Vec3f trace(
 	const Vec3f& rayorig,
@@ -208,14 +307,18 @@ Vec3f trace(
 		Vec3f reflection = 0;
 		Vec3f refraction = 0;
 
+
+		std::thread reflectionThread;
+		std::thread refractionThread;
+
 		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
 
 		//if reflective, find reflection
 		if (sphere->reflection > 0) {
 			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
 			refldir.normalize();
-			Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
-			surfaceColor += reflection * fresneleffect;
+			//traceThreadless(phit + nhit * bias, refldir, spheres, depth + 1, reflection);
+			reflectionThread = std::thread(traceThreadless, phit + nhit * bias, refldir, spheres, depth + 1, reflection);
 		}
 
 
@@ -226,9 +329,21 @@ Vec3f trace(
 			float k = 1 - eta * eta * (1 - cosi * cosi);
 			Vec3f refrdir = raydir * eta + nhit * (eta * cosi - sqrt(k));
 			refrdir.normalize();
-			refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
-			surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
+			//traceThreadless(phit - nhit * bias, refrdir, spheres, depth + 1, reflection);
+			//refractionThread = std::thread(traceThreadless, phit - nhit * bias, refrdir, spheres, depth + 1, sphere, refraction);
+			
 		}
+
+		if (reflectionThread.joinable()) 
+		{
+			reflectionThread.join();
+			surfaceColor += reflection * fresneleffect;
+		}
+		//if (refractionThread.joinable()) 
+		//{
+		//	refractionThread.join();
+		//	surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
+		//}
 
 		// the result is a mix of reflection and refraction (if the sphere is transparent)
 		surfaceColor *= sphere->surfaceColor;
@@ -259,6 +374,7 @@ Vec3f trace(
 
 	return surfaceColor + sphere->emissionColor;
 }
+
 
 
 //[comment]
@@ -339,7 +455,7 @@ void threadedRender(const std::vector<Sphere*>& spheres, Vec3f* pImage, std::mut
 			float xx = (x * invWidth - 1) * angleAndAspect;
 			float yy = (1 - y * invHeight) * angle;
 			Vec3f raydir(xx, yy, -1);
-			raydir.normalize();
+ 			raydir.normalize();
 			Vec3f temp = trace(zero, raydir, spheres, 0);
 			//the threads don't fight over this resource, the mutex is not actually needed!
 			//(*data).lock();
@@ -450,7 +566,13 @@ void SmoothScaling()
 	// Recommended Production Resolution
 	unsigned width = 1920, height = 1080;
 	int concurrency = std::thread::hardware_concurrency();
+	//the trace function invokes 2 more threads for each thread running here, therefore divide the concurrency value by 2
+	if (concurrency > 3)
+		concurrency /= 2;
+	else
+		concurrency = 1;
 	std::vector<std::thread*> threadList;
+	concurrency = 1;
 	//create the array of pixels and a mutex for it.
 	std::mutex data;
 	Vec3f* image = new Vec3f[width * height];
