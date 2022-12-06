@@ -116,7 +116,7 @@ Vec3f trace(
 		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
 
 		//if reflective, find reflection
-		if (sphere->reflection) {
+		if (sphere->reflection > 0) {
 			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
 			refldir.normalize();
 			Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
@@ -125,7 +125,7 @@ Vec3f trace(
 
 
 		// if the sphere is also transparent compute refraction ray (transmission)
-		if (sphere->transparency) {
+		if (sphere->transparency > 0) {
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
 			float cosi = -nhit.dot(raydir);
 			float k = 1 - eta * eta * (1 - cosi * cosi);
@@ -167,7 +167,7 @@ Vec3f trace(
 Vec3f trace(
 	const Vec3f& rayorig,
 	const Vec3f& raydir,
-	const MemoryPool<Sphere>* spheres,
+	const std::vector<Sphere*>& spheres,
 	const int& depth)
 {
 	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
@@ -175,13 +175,13 @@ Vec3f trace(
 	const Sphere* sphere = NULL;
 	// find intersection of this ray with the sphere in the scene
 
-	for (unsigned i = 0; i < spheres->count(); ++i) {
+	for (unsigned i = 0; i < spheres.size(); ++i) {
 		float t0 = INFINITY, t1 = INFINITY;
-		if ((*spheres->GetAt(i)).intersect(rayorig, raydir, t0, t1)) {
+		if (spheres.at(i)->intersect(rayorig, raydir, t0, t1)) {
 			if (t0 < 0) t0 = t1;
 			if (t0 < tnear) {
 				tnear = t0;
-				sphere = spheres->GetAt(i);
+				sphere = spheres.at(i);
 			}
 		}
 	}
@@ -235,24 +235,24 @@ Vec3f trace(
 	}
 	else {
 		// it's a diffuse object, no need to raytrace any further
-		for (unsigned i = 0; i < spheres->count(); ++i) {
-			Sphere temp = *spheres->GetAt(i);
-			if (temp.emissionColor.x > 0) {
+		for (unsigned i = 0; i < spheres.size(); ++i) {
+			Sphere* temp = spheres.at(i);
+			if (temp->emissionColor.x > 0) {
 				// this is a light
 				Vec3f transmission = 1;
-				Vec3f lightDirection = temp.center - phit;
+				Vec3f lightDirection = temp->center - phit;
 				lightDirection.normalize();
-				for (unsigned j = 0; j < spheres->count(); ++j) {
+				for (unsigned j = 0; j < spheres.size(); ++j) {
 					if (i != j) {
 						float t0, t1;
-						if ((*spheres->GetAt(j)).intersect(phit + nhit * bias, lightDirection, t0, t1)) {
+						if (spheres.at(j)->intersect(phit + nhit * bias, lightDirection, t0, t1)) {
 							transmission = 0;
 							break;
 						}
 					}
 				}
 				surfaceColor += sphere->surfaceColor * transmission *
-					std::max(float(0), nhit.dot(lightDirection)) * temp.emissionColor;
+					std::max(float(0), nhit.dot(lightDirection)) * temp->emissionColor;
 			}
 		}
 	}
@@ -313,7 +313,7 @@ void render(const std::vector<Sphere>& spheres, int iteration)
 	delete[] image;
 }
 ////////////////////////////////////////////////////////////////////////// my edit
-void threadedRender(const MemoryPool<Sphere>* spheres, Vec3f* pImage, std::mutex* data, const int maxSubdivisions, const int thisSubdivision, unsigned const width, unsigned const height)
+void threadedRender(const std::vector<Sphere*>& spheres, Vec3f* pImage, std::mutex* data, const int maxSubdivisions, const int thisSubdivision, unsigned const width, unsigned const height)
 {
 
 	Vec3f* pixel = pImage; //copy of pointer to be used for iteration
@@ -327,7 +327,7 @@ void threadedRender(const MemoryPool<Sphere>* spheres, Vec3f* pImage, std::mutex
 	int startIndex = YFraction * thisSubdivision;
 	int endIndex = YFraction * (thisSubdivision + 1);
 
-	//find the start position of the pointer
+	//find the start position of the pointer for subdivision location
 	pixel = (Vec3f*)((char*)pixel + (startIndex * width * sizeof(Vec3f)));
 
 
@@ -436,7 +436,7 @@ void SimpleShrinking()
 void SmoothScaling()
 {
 	//pool of 4 spheres initialized - allocates memory
-	MemoryPool<Sphere>* spherePool = new MemoryPool<Sphere>(4);
+	MemoryPool<Sphere> spherePool = MemoryPool<Sphere>(4);
 	
 	//construct 3 spheres in the pool
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
@@ -474,7 +474,7 @@ void SmoothScaling()
 		//create a couple threads based on concurrency value
 
 		for (int i = 0; i < concurrency; i++) {
-			*threadList[i] = std::thread(threadedRender, spherePool, image, &data, concurrency, i, width, height);
+			//*threadList[i] = std::thread(threadedRender, spherePool, image, &data, concurrency, i, width, height);
 		}
 		for (int i = 0; i < concurrency; i++)
 		{
@@ -493,7 +493,7 @@ void SmoothScaling()
 
 
 		// Release the dynamic sphere
-		spherePool->ReleaseLast();
+		spherePool.ReleaseLast();
 	}
 
 
@@ -503,9 +503,9 @@ void SmoothScaling()
 	HeapManager::GetHeapByIndex((int)HeapID::Graphics)->WalkTheHeap();
 #endif // DEBUG
 
-	delete image;
-	//release all the spheres and delete the memory pool. this calls the destructor, releasing all the objects within it.
-	delete spherePool;
+	delete [] image;
+	//call the destructor, releasing all the objects within the pool.
+	spherePool.~MemoryPool();
 
 }
 void SmoothScalingOriginal()
@@ -541,8 +541,8 @@ int main(int argc, char** argv)
 	srand(13);
 	//BasicRender();
 	//SimpleShrinking();
-	//SmoothScaling();
-	SmoothScalingOriginal();
+	SmoothScaling();
+	//SmoothScalingOriginal();
 
 	auto finish = std::chrono::steady_clock::now();
 	double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
