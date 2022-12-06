@@ -1,12 +1,7 @@
 #pragma once
 #include "MemoryDebugger.h"
-
-//custom std::destroy_at since its not available??
-template <typename T>
-constexpr void destroy_at(T* p)
-{
-	p->~T();
-}
+#include <vector>
+#include <algorithm>
 
 template<class T>
 class MemoryPool
@@ -18,11 +13,18 @@ private:
 	int m_objectCount;
 	void* memoryPoolBlockStart;
 public:
+	std::vector<T*> objects;
 	MemoryPool(int poolMaxObjCount)
 	{
 		m_objectCount = 0;
 		m_poolMaxObjCount = poolMaxObjCount;
 		m_objectSize = sizeof(T);
+
+		//initialize the vector with nullptrs
+		for (int i = 0; i < poolMaxObjCount; i++)
+		{
+			objects.push_back(nullptr);
+		}
 
 		#ifdef _DEBUG
 		m_objectSize += sizeof(Header) + sizeof(Footer);
@@ -30,8 +32,8 @@ public:
 
 		m_poolMaxByteSize = m_objectSize * m_poolMaxObjCount;
 
-		//allocate m_poolMaxByteSize amount of memory
-		memoryPoolBlockStart = malloc(m_poolMaxByteSize);
+		//allocate x times of object size amount of memory. Calloc takes longer than malloc but is ensures that the memory is always one single block.
+		memoryPoolBlockStart = calloc(m_poolMaxObjCount, m_objectSize);
 
 		//setup headers and footers in debug mode
 		#ifdef _DEBUG
@@ -86,6 +88,7 @@ public:
 			}
 		}
 		#endif // _DEBUG
+		objects.clear();
 		free(memoryPoolBlockStart);
 		#ifdef _DEBUG
 		HeapManager::GetHeapByIndex((int)HeapID::Graphics)->SubtractBytes(m_poolMaxByteSize);
@@ -93,39 +96,25 @@ public:
 	}
 	void ReleaseObjects()
 	{
+		int originalCount = count();
 		//release all objects
-		for (int i = 0; i < count() - 1; i++) {
+		for (int i = 0; i < originalCount; i++) {
 			ReleaseLast();
 		}
 	}
 	void ReleaseLast()
 	{
 		//get the last object and call its destructor
-		T* obj = GetAt(m_objectCount - 1);
-		destroy_at(obj);
-		Decrement();
+		ReleaseAt(m_objectCount - 1);
 		
 	}
 	void ReleaseAt(int pos) 
 	{
-		T* obj = GetAt(pos);
-		destroy_at(obj);
+		objects.at(pos) = nullptr;
 		Decrement();
 	}
 	T* GetAt(int pos) const {
-		
-		if (pos > m_objectCount) {
-			//error - index out of range
-			return nullptr;
-		}
-		size_t bytesToMove = pos * m_objectSize;
-		void* mempntr = (void*)((char*)memoryPoolBlockStart + bytesToMove);
-		#ifdef _DEBUG
-		mempntr = (void*)((char*)mempntr + sizeof(Header));
-		#endif // DEBUG
-
-		T* object = (T*)mempntr;
-		return object;
+		return objects.at(pos);
 	}
 	int count() const { return m_objectCount; }
 
@@ -163,7 +152,7 @@ void* operator new (size_t size, MemoryPool<T>* pool)
 	#endif // DEBUG
 
 
-	if (pool->count() + 1 > pool->GetMaxCount()) {
+	if (pool->count() == pool->GetMaxCount()) {
 		//error: pool is full
 		return nullptr;
 	}
@@ -179,17 +168,61 @@ void* operator new (size_t size, MemoryPool<T>* pool)
 	thisMemBlock = (void*)((char*)thisMemBlock + sizeof(Header));
 	#endif // _DEBUG
 
-	
+	pool->objects.at(pool->count()) = (T*)thisMemBlock;
 	pool->Increment();
+
+	return thisMemBlock;
+}
+template<typename T>
+void* operator new (size_t size, MemoryPool<T> pool)
+{
+	size_t requestedBytes = size;
+#ifdef _DEBUG
+	requestedBytes += sizeof(Header) + sizeof(Footer);
+#endif // DEBUG
+
+
+	if (pool.count() == pool.GetMaxCount()) {
+		//error: pool is full
+		return nullptr;
+	}
+	else if (requestedBytes != pool.GetObjectSize()) {
+		//error: wrong object type
+		return nullptr;
+	}
+
+	void* thisMemBlock = pool.GetPoolMemBlock();
+	thisMemBlock = (void*)((char*)thisMemBlock + (pool->GetObjectSize() * pool.count()));
+
+#ifdef _DEBUG
+	thisMemBlock = (void*)((char*)thisMemBlock + sizeof(Header));
+#endif // _DEBUG
+
+	pool.objects.at(pool.count()) = (T*)thisMemBlock;
+	pool.Increment();
 
 	return thisMemBlock;
 }
 
 template<typename T>
-void operator delete (void* pMem, MemoryPool<T>* pool) 
+void operator delete (void* pMem, MemoryPool<T>* pool)
 {
 	//release the object rather than deleting it
 	T* obj = (T*)pMem;
-	destroy_at(obj);
+	auto it = find(pool->objects.begin(), pool->objects.end(), obj);
+	if (it != pool->objects.end()) {
+		int index = it - pool->objects.begin();
+		pool->ReleaseAt(index);
+	}
 }
-
+template<typename T>
+void operator delete (void* pMem, MemoryPool<T> pool)
+{
+	//release the object rather than deleting it
+	T* obj = (T*)pMem;
+	auto it = find(pool.objects.begin(), pool.objects.end(), obj);
+	if (it != pool.objects.end()) {
+		int index = it - pool.objects.begin();
+		pool.ReleaseAt(index);
+	}
+}
