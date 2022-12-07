@@ -163,13 +163,14 @@ Vec3f trace(
 
 	return surfaceColor + sphere->emissionColor;
 }
-void traceThreadless(
+Vec3f traceThreadless(
 	const Vec3f& rayorig,
 	const Vec3f& raydir,
 	const std::vector<Sphere*>& spheres,
 	const int& depth,
 	Vec3f& output)
 {
+	output = Vec3f(0);
 	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
 	float tnear = INFINITY;
 	const Sphere* sphere = NULL;
@@ -188,7 +189,7 @@ void traceThreadless(
 	// if there's no intersection return black or background color
 	if (!sphere) {
 		output = Vec3f(2);
-		return;
+		return output;
 	}
 
 	Vec3f surfaceColor = 0; // color of the ray/surfaceof the object intersected by the ray
@@ -261,6 +262,7 @@ void traceThreadless(
 		}
 	}
 	output = surfaceColor + sphere->emissionColor;
+	return output;
 }
 /////////////////////////////////////////////////////// my edit
 Vec3f trace(
@@ -456,7 +458,9 @@ void threadedRender(const std::vector<Sphere*>& spheres, Vec3f* pImage, std::mut
 			float yy = (1 - y * invHeight) * angle;
 			Vec3f raydir(xx, yy, -1);
  			raydir.normalize();
-			Vec3f temp = trace(zero, raydir, spheres, 0);
+			//Vec3f temp = trace(zero, raydir, spheres, 0);
+			Vec3f temp;
+			traceThreadless(zero, raydir, spheres, 0, temp);
 			//the threads don't fight over this resource, the mutex is not actually needed!
 			//(*data).lock();
 			*pixel = temp;
