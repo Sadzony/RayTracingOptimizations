@@ -314,10 +314,10 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 void render(MemoryPool<Sphere>* spheres, int iteration)
 {
 	// Recommended Testing Resolution
-	unsigned const width = 640, height = 480;
+	//unsigned const width = 640, height = 480;
 
 	// Recommended Production Resolution
-	//unsigned width = 1920, height = 1080;
+	unsigned width = 1920, height = 1080;
 	Vec3f* image = new Vec3f[width * height], * pixel = image; //array of colors
 	float invWidth = 2 / float(width), invHeight = 2 / float(height); //optimization: rather than multiplying by 2 on every iteration, just do it here once.
 	float fov = 30, aspectratio = width / float(height);
@@ -434,7 +434,7 @@ void SmoothScaling()
 	Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
 	
 
-	for (float r = 90; r <= 100; r++)
+	for (float r = 0; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 

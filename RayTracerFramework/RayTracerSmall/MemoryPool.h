@@ -94,7 +94,8 @@ public:
 	void ReleaseObjects()
 	{
 		//release all objects
-		for (int i = 0; i < count() - 1; i++) {
+		int originalCount = count();
+		for (int i = 0; i < originalCount - 1; i++) {
 			ReleaseLast();
 		}
 	}
