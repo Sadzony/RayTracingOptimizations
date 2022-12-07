@@ -1,9 +1,45 @@
 ﻿  main.cpp
-D:\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(225,6): warning : unused variable 'ret' [-Wunused-variable]
+  In file included from C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp:29:
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer/MemoryPool.h(157,3): warning : 'operator new' should not return a null pointer unless it is declared 'throw()' or 'noexcept' [-Wnew-returns-null]
+                  return nullptr;
+                  ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer/MemoryPool.h(161,3): warning : 'operator new' should not return a null pointer unless it is declared 'throw()' or 'noexcept' [-Wnew-returns-null]
+                  return nullptr;
+                  ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer/MemoryPool.h(187,3): warning : 'operator new' should not return a null pointer unless it is declared 'throw()' or 'noexcept' [-Wnew-returns-null]
+                  return nullptr;
+                  ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer/MemoryPool.h(191,3): warning : 'operator new' should not return a null pointer unless it is declared 'throw()' or 'noexcept' [-Wnew-returns-null]
+                  return nullptr;
+                  ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(229,6): warning : unused variable 'ret' [-Wunused-variable]
           int ret = onionAllocator.initialize(
               ^
-D:\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(34,18): warning : unused variable 'num_threads' [-Wunused-const-variable]
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(297,11): warning : unused variable 'sphere4' [-Wunused-variable]
+                  Sphere* sphere4 = new (spherePool) Sphere(Vec3f(i, 0, -20), 1, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
+                          ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(292,10): warning : unused variable 'sphere2' [-Wunused-variable]
+          Sphere* sphere2 = new (spherePool) Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0);
+                  ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(293,10): warning : unused variable 'sphere3' [-Wunused-variable]
+          Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
+                  ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(291,10): warning : unused variable 'sphere1' [-Wunused-variable]
+          Sphere* sphere1 = new (spherePool) Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0);
+                  ^
+  In file included from C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp:29:
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer/MemoryPool.h(157,3): warning : 'operator new<Sphere>' should not return a null pointer unless it is declared 'throw()' or 'noexcept' [-Wnew-returns-null]
+                  return nullptr;
+                  ^
+  C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(291,20): note: in instantiation of function template specialization 'operator new<Sphere>' requested here
+          Sphere* sphere1 = new (spherePool) Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0);
+                            ^
+  In file included from C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp:29:
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer/MemoryPool.h(161,3): warning : 'operator new<Sphere>' should not return a null pointer unless it is declared 'throw()' or 'noexcept' [-Wnew-returns-null]
+                  return nullptr;
+                  ^
+C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\PlayStationRayTracer\main.cpp(38,18): warning : unused variable 'num_threads' [-Wunused-const-variable]
   static const int num_threads = 10;
                    ^
-  2 warnings generated.
-  PlayStationRayTracer.vcxproj -> D:\RayTracingOptimizations\PlayStationRayTracer\ORBIS_Debug\PlayStationRayTracer.elf
+  12 warnings generated.
+  PlayStationRayTracer.vcxproj -> C:\Users\s011308k\Documents\GitHub\RayTracingOptimizations\PlayStationRayTracer\ORBIS_Debug\PlayStationRayTracer.elf

@@ -26,6 +26,7 @@
 
 //memory
 #include "MemoryDebugger.h"
+#include "MemoryPool.h"
 
 
 static const size_t kOnionMemorySize = 64 * 1024 * 1024;
@@ -134,7 +135,7 @@ float mix(const float &a, const float &b, const float &mix)
 Vec3f trace(
 	const Vec3f &rayorig,
 	const Vec3f &raydir,
-	const std::vector<Sphere> &spheres,
+	const std::vector<Sphere*> &spheres,
 	const int &depth)
 {
 	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
@@ -143,11 +144,11 @@ Vec3f trace(
 	// find intersection of this ray with the sphere in the scene
 	for (unsigned i = 0; i < spheres.size(); ++i) {
 		float t0 = INFINITY, t1 = INFINITY;
-		if (spheres[i].intersect(rayorig, raydir, t0, t1)) {
+		if (spheres[i]->intersect(rayorig, raydir, t0, t1)) {
 			if (t0 < 0) t0 = t1;
 			if (t0 < tnear) {
 				tnear = t0;
-				sphere = &spheres[i];
+				sphere = spheres[i];
 			}
 		}
 	}
@@ -191,22 +192,22 @@ Vec3f trace(
 	else {
 		// it's a diffuse object, no need to raytrace any further
 		for (unsigned i = 0; i < spheres.size(); ++i) {
-			if (spheres[i].emissionColor.x > 0) {
+			if (spheres[i]->emissionColor.x > 0) {
 				// this is a light
 				Vec3f transmission = 1;
-				Vec3f lightDirection = spheres[i].center - phit;
+				Vec3f lightDirection = spheres[i]->center - phit;
 				lightDirection.normalize();
 				for (unsigned j = 0; j < spheres.size(); ++j) {
 					if (i != j) {
 						float t0, t1;
-						if (spheres[j].intersect(phit + nhit * bias, lightDirection, t0, t1)) {
+						if (spheres[j]->intersect(phit + nhit * bias, lightDirection, t0, t1)) {
 							transmission = 0;
 							break;
 						}
 					}
 				}
 				surfaceColor += sphere->surfaceColor * transmission *
-					std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
+					std::max(float(0), nhit.dot(lightDirection)) * spheres[i]->emissionColor;
 			}
 		}
 	}
@@ -219,7 +220,7 @@ Vec3f trace(
 // trace it and return a color. If the ray hits a sphere, we return the color of the
 // sphere at the intersection point, else we return the background color.
 //[/comment]
-void render(const std::vector<Sphere> &spheres, int iteration, int threadNumber)
+void render(const std::vector<Sphere*> &spheres, int iteration, int threadNumber)
 {
 
 	// Initialize the WB_ONION memory allocator
@@ -272,16 +273,8 @@ void render(const std::vector<Sphere> &spheres, int iteration, int threadNumber)
 
 
 
-void BasicRender(int iteration)
+void BasicRender(int iteration, std::vector<Sphere*>& spheres)
 {
-	//std::chrono::system_clock a;
-
-	std::vector<Sphere> spheres;
-
-	spheres.push_back(Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
-	spheres.push_back(Sphere(Vec3f(iteration, 0, -20), 1, Vec3f(1.00, 0.32, 0.36), 1, 0.5)); // Radius++ change here
-	spheres.push_back(Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
-	spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
 	
 	auto start = std::chrono::system_clock::now(); //start counting
 
@@ -291,16 +284,19 @@ void BasicRender(int iteration)
 
 	double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
 	std::cout << "Rendered and saved spheres" << iteration << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
-
-	spheres.clear();
 }
 int main(int argc, char **argv)
 {
+	MemoryPool<Sphere>* spherePool = new MemoryPool <Sphere>(4);
+	Sphere* sphere1 = new (spherePool) Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0);
+	Sphere* sphere2 = new (spherePool) Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0);
+	Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
+	
 	for (int i = 0; i < 10; i++)
 	{
-		BasicRender(i);
+		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(i, 0, -20), 1, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
+		BasicRender(i, spherePool->objects);
+		spherePool->ReleaseLast();
 	}
-	
-	
 	return 0;
 }
