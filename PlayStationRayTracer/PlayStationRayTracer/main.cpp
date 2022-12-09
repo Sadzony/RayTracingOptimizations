@@ -11,10 +11,13 @@
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include <stdio.h>
 
 #include <algorithm>
 #include <sstream>
 #include <string.h>
+
+
 
 // Time precision
 #include <chrono>
@@ -38,7 +41,9 @@ std::chrono::time_point<std::chrono::system_clock> start;
 std::chrono::time_point<std::chrono::system_clock> end;
 std::chrono::duration<double> total_elapsed_time;
 
-static const int num_threads = 10;
+#define CONTEXT_SIZE 16384
+#define NUM_THREADS 7
+static uint64_t workerContextBuffer[NUM_THREADS][CONTEXT_SIZE / sizeof(uint64_t)];
 
 using namespace sce;
 using namespace sce::Gnmx;
@@ -291,6 +296,7 @@ struct attributes
 	int height;
 };
 
+//wrapper for the render function
 int32_t renderThreadEntry(uint64_t arg)
 {
 	attributes* attr = (attributes*)arg;
@@ -299,7 +305,7 @@ int32_t renderThreadEntry(uint64_t arg)
 }
 
 
-void BasicRender(int iteration, std::vector<Sphere*>& spheres, int threadNumber)
+void BasicRender(int iteration, std::vector<Sphere*>& spheres, int concurrencyVal, SceUltUlthreadRuntime& runtime)
 {
 	auto start = std::chrono::system_clock::now(); //start counting
 
@@ -320,48 +326,40 @@ void BasicRender(int iteration, std::vector<Sphere*>& spheres, int threadNumber)
 
 	Vec3f* image = reinterpret_cast<Vec3f*>(buffer);
 
-	//setup arguments for the entry function
-	attributes* arg = new attributes();
-	arg->spheres = &spheres;
-	arg->image = image;
-	arg->iteration = iteration;
-	arg->maxSubdivisions = threadNumber;
-	arg->width = width;
-	arg->height = height;
 
 
-	//create a couple threads based on concurrency value
-	//initialize the runtime
-	SceUltUlthreadRuntime* runtime;
-	uint64_t workAreasize = sceUltUlthreadRuntimeGetWorkAreaSize(threadNumber, 4);
-	void* threadBuffer = malloc(workAreasize);
-	sceUltUlthreadRuntimeCreate(runtime, "renderRuntime", threadNumber, 4, threadBuffer, NULL);
 
-	
 
-	std::vector<SceUltUlthread> threads;
+	uint64_t threadContextSize = CONTEXT_SIZE; //amount of allocated data per thread
+	SceUltUlthread threads[NUM_THREADS];
+	attributes args[NUM_THREADS] __attribute__((aligned(8)));
 	//create user level threads
-	for (int i = 0; i < 4; i++) {
-		arg->thisSubdivision = i;
-		SceUltUlthread ultThread;
-		sceUltUlthreadCreate(&ultThread, "renderThread", renderThreadEntry, (uint64_t)&arg, NULL, NULL, runtime, NULL);
-		threads.push_back(ultThread);
+	for (int i = 0; i < NUM_THREADS; i++) {
+
+		//setup arguments for the entry function
+		args[i].spheres = &spheres;
+		args[i].image = image;
+		args[i].iteration = iteration;
+		args[i].maxSubdivisions = NUM_THREADS;
+		args[i].width = width;
+		args[i].height = height;
+		args[i].thisSubdivision = i;
+
+		//create thread
+		ret = sceUltUlthreadCreate(&threads[i], "renderThread", renderThreadEntry, (uint64_t)&args[i], workerContextBuffer[i], threadContextSize, &runtime, NULL);
+		assert(ret == SCE_OK);
 	}
 
 	//join threads
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < NUM_THREADS; i++) {
 		int32_t status;
-		sceUltUlthreadJoin(&threads.at(i), &status);
+		ret = sceUltUlthreadJoin(&threads[i], &status);
+		assert(ret == SCE_OK);
 	}
 
 	//Create the file
 	FileCreation(width, height, image, iteration);
 
-	//destroy the runtime and free work area
-	threads.clear();
-	sceUltUlthreadRuntimeDestroy(runtime);
-	free(threadBuffer);
-	delete arg;
 
 	auto finish = std::chrono::system_clock::now();
 
@@ -383,17 +381,29 @@ int main(int argc, char** argv)
 
 		int concurrency = std::thread::hardware_concurrency();
 
-
+		//initialize the runtime
+		SceUltUlthreadRuntime runtime;
+		uint64_t workAreasize = sceUltUlthreadRuntimeGetWorkAreaSize(concurrency, NUM_THREADS);
+		void* runtimeBuffer = malloc(workAreasize);
+		uint64_t ret = sceUltUlthreadRuntimeCreate(&runtime, "renderRuntime", concurrency, NUM_THREADS, runtimeBuffer, NULL);
 
 		for (int i = 0; i < 10; i++)
 		{
 			Sphere* sphere4 = new (spherePool) Sphere(Vec3f(i, 0, -20), 1, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
-			BasicRender(i, spherePool->objects, concurrency);
+			BasicRender(i, spherePool->objects, concurrency, runtime);
 			spherePool->ReleaseLast();
 		}
+
+		//destroy the runtime and free work area
+
+		sceUltUlthreadRuntimeDestroy(&runtime);
+		free(runtimeBuffer);
+
 		auto finish = std::chrono::steady_clock::now();
 		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
 		std::cout << std::endl << "The entire process took " << elapsedSeconds << "s" << std::endl;
+		spherePool->ReleaseObjects();
+		delete spherePool;
 	}
 	sceUltFinalize();
 	sceSysmoduleUnloadModule(SCE_SYSMODULE_ULT);
