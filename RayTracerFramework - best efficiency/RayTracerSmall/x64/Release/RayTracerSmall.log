@@ -1,0 +1,191 @@
+﻿  main.cpp
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(48,1): warning C4005: 'INFINITY': macro redefinition
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_math.h(88): message : see previous definition of 'INFINITY'
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(103,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(109,60): warning C4305: 'argument': truncation from 'double' to 'const float'
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(109,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(129,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(195,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(201,60): warning C4305: 'argument': truncation from 'double' to 'const float'
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(201,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(221,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(278,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(319,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(324,17): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(325,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(333,34): warning C4018: '<': signed/unsigned mismatch
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(355,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(360,17): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(361,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(369,34): warning C4018: '<': signed/unsigned mismatch
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(408,81): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(409,72): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(410,73): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(411,72): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(435,83): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(436,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(437,75): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(438,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(443,83): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(444,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(445,75): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(446,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(450,83): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(451,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(452,75): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(453,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(457,83): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(458,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(459,75): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(460,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(476,98): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(477,90): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(478,89): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(502,96): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(519,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(547,81): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(549,73): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(550,72): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(572,79): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(586,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(606,82): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(607,79): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(608,74): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(609,73): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(610,19): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\MemoryPool.h(214,13): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+D:\RayTracingOptimizations\RayTracerFramework - best efficiency\RayTracerSmall\main.cpp(476): message : see reference to function template instantiation 'void operator delete<Sphere>(void *,MemoryPool<Sphere> *)' being compiled
+  Generating code
+  153 of 428 functions (35.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    6 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  RayTracerSmall.vcxproj -> D:\RayTracingOptimizations\RayTracerFramework - best efficiency\x64\Release\RayTracerSmall.exe
