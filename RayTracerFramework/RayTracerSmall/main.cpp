@@ -167,8 +167,10 @@ Vec3f trace(
 					  // positive.
 	float bias = 1e-4; // add some bias to the point from which we will be tracing
 	bool inside = false;
+	bool transparent = sphere->transparency > 0;
+	bool reflective = sphere->reflection > 0;
 	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
-	if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
+	if ((transparent || reflective) && depth < MAX_RAY_DEPTH) {
 		float facingratio = -raydir.dot(nhit);
 		// change the mix value to tweak the effect
 		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
@@ -181,7 +183,7 @@ Vec3f trace(
 		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
 
 		//if reflective, find reflection
-		if (sphere->reflection) {
+		if (reflective) {
 			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
 			refldir.normalize();
 			Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
@@ -190,7 +192,7 @@ Vec3f trace(
 
 
 		// if the sphere is also transparent compute refraction ray (transmission)
-		if (sphere->transparency) {
+		if (transparent) {
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
 			float cosi = -nhit.dot(raydir);
 			float k = 1 - eta * eta * (1 - cosi * cosi);
@@ -239,10 +241,10 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 
 
 	// Recommended Testing Resolution
-	unsigned const width = 640, height = 480;
+	//unsigned const width = 640, height = 480;
 
 	// Recommended Production Resolution
-	//unsigned width = 1920, height = 1080;
+	unsigned width = 1920, height = 1080;
 	Vec3f *image = new Vec3f[width * height], *pixel = image; //array of colors
 	float invWidth = 2 / float(width), invHeight = 2 / float(height); //optimization: rather than multiplying by 2 on every iteration, just do it here once.
 	float fov = 30, aspectratio = width / float(height);
@@ -358,7 +360,6 @@ void SmoothScaling()
 
 	for (float r = 0; r <= 100; r++)
 	{
-		auto start = std::chrono::steady_clock::now();
 
 		spheres.push_back(Sphere(Vec3f(0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
 		spheres.push_back(Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5)); // Radius++ change here
@@ -366,10 +367,7 @@ void SmoothScaling()
 		spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
 		render(spheres, r);
 
-		auto finish = std::chrono::steady_clock::now();
-		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
-
-		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
+		std::cout << "Rendered and saved spheres" << r << ".ppm" << std::endl;
 
 		// Dont forget to clear the Vector holding the spheres.
 		spheres.clear();
@@ -383,17 +381,15 @@ void SmoothScaling()
 //[/comment]
 int main(int argc, char **argv)
 {
+	auto start = std::chrono::steady_clock::now();
 	// This sample only allows one choice per program execution. Feel free to improve upon this
 	srand(13);
-	BasicRender();
+	//BasicRender();
 	//SimpleShrinking();
-	//SmoothScaling();
-
-#ifdef  _DEBUG
-	HeapManager::CleanUp();
-#endif //  _DEBUG
-
-
+	SmoothScaling();
+	auto finish = std::chrono::steady_clock::now();
+	double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
+	std::cout << std::endl << "The entire process took " << elapsedSeconds << "s" << std::endl;
 	return 0;
 }
 
