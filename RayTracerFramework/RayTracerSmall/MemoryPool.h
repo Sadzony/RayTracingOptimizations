@@ -110,11 +110,11 @@ public:
 	}
 	void ReleaseAt(int pos) 
 	{
-		objects.at(pos) = nullptr;
+		objects[pos] = nullptr;
 		Decrement();
 	}
 	T* GetAt(int pos) const {
-		return objects.at(pos);
+		return objects[pos];
 	}
 	int count() const { return m_objectCount; }
 

@@ -102,8 +102,10 @@ Vec3f trace(
 	// positive.
 	float bias = 1e-4; // add some bias to the point from which we will be tracing
 	bool inside = false;
+	bool transparent = sphere->transparency > 0;
+	bool reflective = sphere->reflection > 0;
 	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
-	if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
+	if ((transparent || reflective) && depth < MAX_RAY_DEPTH) {
 		float facingratio = -raydir.dot(nhit);
 		// change the mix value to tweak the effect
 		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
@@ -116,7 +118,7 @@ Vec3f trace(
 		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
 
 		//if reflective, find reflection
-		if (sphere->reflection) {
+		if (transparent) {
 			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
 			refldir.normalize();
 			Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
@@ -125,7 +127,7 @@ Vec3f trace(
 
 
 		// if the sphere is also transparent compute refraction ray (transmission)
-		if (sphere->transparency) {
+		if (reflective) {
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
 			float cosi = -nhit.dot(raydir);
 			float k = 1 - eta * eta * (1 - cosi * cosi);
@@ -198,7 +200,9 @@ Vec3f trace(
 	float bias = 1e-4; // add some bias to the point from which we will be tracing
 	bool inside = false;
 	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
-	if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
+	bool transparent = sphere->transparency > 0;
+	bool reflective = sphere->reflection > 0;
+	if ((transparent || reflective) && depth < MAX_RAY_DEPTH) {
 		float facingratio = -raydir.dot(nhit);
 		// change the mix value to tweak the effect
 		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
@@ -211,7 +215,7 @@ Vec3f trace(
 		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
 
 		//if reflective, find reflection
-		if (sphere->reflection > 0) {
+		if (reflective) {
 			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
 			refldir.normalize();
 			Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
@@ -220,7 +224,7 @@ Vec3f trace(
 
 
 		// if the sphere is also transparent compute refraction ray (transmission)
-		if (sphere->transparency > 0) {
+		if (transparent) {
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
 			float cosi = -nhit.dot(raydir);
 			float k = 1 - eta * eta * (1 - cosi * cosi);
@@ -449,7 +453,7 @@ void SmoothScaling()
 
 	// Recommended Production Resolution
 	unsigned width = 1920, height = 1080;
-	int concurrency = std::thread::hardware_concurrency();
+	int concurrency = 16;
 	std::vector<std::thread*> threadList;
 	//create the array of pixels and a mutex for it.
 	std::mutex data;
@@ -463,7 +467,6 @@ void SmoothScaling()
 
 	for (float r = 0; r <= 100; r++)
 	{
-		auto start = std::chrono::steady_clock::now();
 
 		//construct the dynamic sphere
 		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
@@ -485,10 +488,7 @@ void SmoothScaling()
 		//create the file here
 		FileCreation(width, height, image, r);
 
-		auto finish = std::chrono::steady_clock::now();
-		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
-
-		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
+		std::cout << "Rendered and saved spheres" << r << ".ppm" << std::endl;
 
 
 
