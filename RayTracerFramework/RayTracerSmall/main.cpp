@@ -281,8 +281,8 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 	}
 	ofs.close();
 #ifdef  _DEBUG
-	HeapManager::GetHeapByIndex(0)->WalkTheHeap();
-	HeapManager::GetHeapByIndex(1)->WalkTheHeap();
+	//HeapManager::GetHeapByIndex(0)->WalkTheHeap();
+	//HeapManager::GetHeapByIndex(1)->WalkTheHeap();
 #endif
 	delete[] image;
 }
