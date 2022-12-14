@@ -202,8 +202,10 @@ Vec3f traceThreadless(
 	// positive.
 	float bias = 1e-4; // add some bias to the point from which we will be tracing
 	bool inside = false;
+	bool transparent = sphere->transparency > 0;
+	bool reflective = sphere->reflection > 0;
 	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
-	if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
+	if ((transparent || reflective) && depth < MAX_RAY_DEPTH) {
 		float facingratio = -raydir.dot(nhit);
 		// change the mix value to tweak the effect
 		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
@@ -216,7 +218,7 @@ Vec3f traceThreadless(
 		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
 
 		//if reflective, find reflection
-		if (sphere->reflection > 0) {
+		if (reflective) {
 			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
 			refldir.normalize();
 			traceThreadless(phit + nhit * bias, refldir, spheres, depth + 1, reflection);
@@ -225,7 +227,7 @@ Vec3f traceThreadless(
 
 
 		// if the sphere is also transparent compute refraction ray (transmission)
-		if (sphere->transparency > 0) {
+		if (transparent) {
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
 			float cosi = -nhit.dot(raydir);
 			float k = 1 - eta * eta * (1 - cosi * cosi);
@@ -298,8 +300,10 @@ Vec3f trace(
 	// positive.
 	float bias = 1e-4; // add some bias to the point from which we will be tracing
 	bool inside = false;
+	bool transparent = sphere->transparency > 0;
+	bool reflective = sphere->reflection > 0;
 	if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
-	if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
+	if ((transparent || reflective) && depth < MAX_RAY_DEPTH) {
 		float facingratio = -raydir.dot(nhit);
 		// change the mix value to tweak the effect
 		float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
@@ -316,7 +320,7 @@ Vec3f trace(
 		//optimization: add reflection values only if reflection is present. Add transparency values only if its present.
 
 		//if reflective, find reflection
-		if (sphere->reflection > 0) {
+		if (reflective) {
 			Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
 			refldir.normalize();
 			//traceThreadless(phit + nhit * bias, refldir, spheres, depth + 1, reflection);
@@ -325,14 +329,14 @@ Vec3f trace(
 
 
 		// if the sphere is also transparent compute refraction ray (transmission)
-		if (sphere->transparency > 0) {
+		if (transparent) {
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
 			float cosi = -nhit.dot(raydir);
 			float k = 1 - eta * eta * (1 - cosi * cosi);
 			Vec3f refrdir = raydir * eta + nhit * (eta * cosi - sqrt(k));
 			refrdir.normalize();
 			//traceThreadless(phit - nhit * bias, refrdir, spheres, depth + 1, reflection);
-			//refractionThread = std::thread(traceThreadless, phit - nhit * bias, refrdir, spheres, depth + 1, sphere, refraction);
+			refractionThread = std::thread(traceThreadless, phit - nhit * bias, refrdir, spheres, depth + 1, refraction);
 			
 		}
 
@@ -341,11 +345,11 @@ Vec3f trace(
 			reflectionThread.join();
 			surfaceColor += reflection * fresneleffect;
 		}
-		//if (refractionThread.joinable()) 
-		//{
-		//	refractionThread.join();
-		//	surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
-		//}
+		if (refractionThread.joinable()) 
+		{
+			refractionThread.join();
+			surfaceColor += refraction * (1 - fresneleffect) * sphere->transparency;
+		}
 
 		// the result is a mix of reflection and refraction (if the sphere is transparent)
 		surfaceColor *= sphere->surfaceColor;
@@ -384,7 +388,7 @@ Vec3f trace(
 // trace it and return a color. If the ray hits a sphere, we return the color of the
 // sphere at the intersection point, else we return the background color.
 //[/comment]
-void render(const std::vector<Sphere>& spheres, int iteration)
+void render(const std::vector<Sphere*>& spheres, int iteration)
 {
 
 
@@ -500,7 +504,7 @@ void BasicRender()
 	auto start = std::chrono::system_clock::now();
 
 	// This creates a file, titled 1.ppm in the current working directory
-	render(spheres, 1);
+	//render(spheres, 1);
 	auto finish = std::chrono::system_clock::now();
 	double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
 
@@ -547,7 +551,7 @@ void SimpleShrinking()
 			spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
 		}
 
-		render(spheres, i);
+		//render(spheres, i);
 		// Dont forget to clear the Vector holding the spheres.
 		spheres.clear();
 	}
@@ -569,51 +573,26 @@ void SmoothScaling()
 
 	// Recommended Production Resolution
 	unsigned width = 1920, height = 1080;
-	int concurrency = std::thread::hardware_concurrency();
-	//the trace function invokes 2 more threads for each thread running here, therefore divide the concurrency value by 2
-	if (concurrency > 3)
-		concurrency /= 2;
-	else
-		concurrency = 1;
-	std::vector<std::thread*> threadList;
-	concurrency = 1;
 	//create the array of pixels and a mutex for it.
 	std::mutex data;
 	Vec3f* image = new Vec3f[width * height];
-	
-	//initialize the thread list
-	for (int i = 0; i < concurrency; i++) {
-		std::thread* t = new std::thread();
-		threadList.push_back(t);
-	}
 
 	for (float r = 0; r <= 100; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
-
 		//construct the dynamic sphere
 		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
 
 
-
+		render(spherePool->objects, r);
 
 		//create a couple threads based on concurrency value
-
-		for (int i = 0; i < concurrency; i++) {
-			*threadList[i] = std::thread(threadedRender, spherePool->objects, image, &data, concurrency, i, width, height);
-		}
-		for (int i = 0; i < concurrency; i++)
-		{
-			threadList[i]->join();
-		}
 
 
 		//create the file here
 		FileCreation(width, height, image, r);
-
 		auto finish = std::chrono::steady_clock::now();
 		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
-
 		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
 
 
@@ -645,7 +624,7 @@ void SmoothScalingOriginal()
 		spheres.push_back(Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5)); // Radius++ change here
 		spheres.push_back(Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
 		spheres.push_back(Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
-		render(spheres, r);
+		//render(spheres, r);
 		auto finish = std::chrono::steady_clock::now();
 		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
 		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s to render and save." << std::endl;
