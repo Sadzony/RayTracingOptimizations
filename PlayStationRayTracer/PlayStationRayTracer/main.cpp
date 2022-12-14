@@ -42,7 +42,7 @@ std::chrono::time_point<std::chrono::system_clock> end;
 std::chrono::duration<double> total_elapsed_time;
 
 #define CONTEXT_SIZE 16384
-#define NUM_THREADS 7
+#define NUM_THREADS 12
 static uint64_t workerContextBuffer[NUM_THREADS][CONTEXT_SIZE / sizeof(uint64_t)];
 
 using namespace sce;
@@ -379,7 +379,8 @@ int main(int argc, char** argv)
 		Sphere* sphere2 = new (spherePool) Sphere(Vec3f(5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0);
 		Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
 
-		int concurrency = std::thread::hardware_concurrency();
+		//int concurrency = std::thread::hardware_concurrency();
+		int concurrency = NUM_THREADS;
 
 		//initialize the runtime
 		SceUltUlthreadRuntime runtime;
