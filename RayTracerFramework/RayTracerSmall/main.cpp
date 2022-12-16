@@ -467,7 +467,7 @@ void SmoothScaling()
 
 	for (float r = 0; r <= 100; r++)
 	{
-
+		auto start = std::chrono::steady_clock::now();
 		//construct the dynamic sphere
 		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
 
@@ -488,7 +488,9 @@ void SmoothScaling()
 		//create the file here
 		FileCreation(width, height, image, r);
 
-		std::cout << "Rendered and saved spheres" << r << ".ppm" << std::endl;
+		auto finish = std::chrono::steady_clock::now();
+		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
+		std::cout << "Rendered and saved spheres" << r << ".ppm" << ". It took " << elapsedSeconds << "s" << std::endl;
 
 
 
