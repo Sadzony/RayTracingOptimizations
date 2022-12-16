@@ -5,13 +5,10 @@ C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTr
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(107,60): warning C4305: 'argument': truncation from 'double' to 'const float'
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(107,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(127,19): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(176,25): warning C4018: '<': signed/unsigned mismatch
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(196,19): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(202,60): warning C4305: 'argument': truncation from 'double' to 'const float'
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(202,32): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(222,19): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(236,26): warning C4018: '<': signed/unsigned mismatch
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(243,28): warning C4018: '<': signed/unsigned mismatch
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(279,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(324,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(364,81): warning C4305: 'argument': truncation from 'double' to 'T'
@@ -129,18 +126,20 @@ C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTr
           [
               T=float
           ]
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(442,96): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(443,96): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(444,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(91,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(66,1): message : while compiling class template member function 'MemoryPool<Sphere>::~MemoryPool(void)'
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(154,1): message : see reference to function template instantiation 'MemoryPool<Sphere>::~MemoryPool(void)' being compiled
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(176,34): message : see reference to class template instantiation 'MemoryPool<Sphere>' being compiled
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(46,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(21,1): message : while compiling class template member function 'MemoryPool<Sphere>::MemoryPool(int)'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(445,31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(94,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(68,1): message : while compiling class template member function 'MemoryPool<Sphere>::~MemoryPool(void)'
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(143,1): message : see reference to function template instantiation 'MemoryPool<Sphere>::~MemoryPool(void)' being compiled
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(428,57): message : see reference to class template instantiation 'MemoryPool<Sphere>' being compiled
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(48,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(17,1): message : while compiling class template member function 'MemoryPool<Sphere>::MemoryPool(int)'
 C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(428,33): message : see reference to function template instantiation 'MemoryPool<Sphere>::MemoryPool(int)' being compiled
-C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(62,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(64,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\MemoryPool.h(214,13): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\RayTracerSmall\main.cpp(432,107): message : see reference to function template instantiation 'void operator delete<Sphere>(void *,MemoryPool<Sphere> *)' being compiled
   RayTracerSmall.vcxproj -> C:\Users\szymo\Programming\algorithmics\RayTracing\RayTracingOptimizations\RayTracerFramework\x64\Debug\RayTracerSmall.exe

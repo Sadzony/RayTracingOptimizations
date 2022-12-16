@@ -311,7 +311,7 @@ void render(const std::vector<Sphere> &spheres, int iteration)
 	delete[] image;
 }
 ////////////////////////////////////////////////////////////////////////// my edit
-void render(std::vector<Sphere*> spheres, int iteration)
+void render(std::vector<Sphere*> &spheres, int iteration)
 {
 	// Recommended Testing Resolution
 	//unsigned const width = 640, height = 480;
@@ -425,7 +425,7 @@ void SimpleShrinking()
 void SmoothScaling()
 {
 	//pool of 4 spheres initialized - allocates memory
-	MemoryPool<Sphere> spherePool = MemoryPool<Sphere>(4);
+	MemoryPool<Sphere>* spherePool = new MemoryPool<Sphere>(4);
 
 	//construct 3 spheres in the pool
 	// Vector structure for Sphere (position, radius, surface color, reflectivity, transparency, emission color)
@@ -434,14 +434,15 @@ void SmoothScaling()
 	Sphere* sphere3 = new (spherePool) Sphere(Vec3f(5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0);
 	
 
-	for (float r = 0; r <= 100; r++)
+
+	for (float r = 0; r <= 5; r++)
 	{
 		auto start = std::chrono::steady_clock::now();
 
 		//construct the dynamic sphere
 		Sphere* sphere4 = new (spherePool) Sphere(Vec3f(0.0, 0, -20), r / 100, Vec3f(1.00, 0.32, 0.36), 1, 0.5);
 
-		render(spherePool.objects, r);
+		render(spherePool->objects, r);
 
 		auto finish = std::chrono::steady_clock::now();
 		double elapsedSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count();
@@ -451,7 +452,7 @@ void SmoothScaling()
 		
 
 		// Release the dynamic sphere
-		spherePool.ReleaseLast();
+		spherePool->ReleaseLast();
 	}
 
 	#ifdef _DEBUG
@@ -460,9 +461,9 @@ void SmoothScaling()
 	HeapManager::GetHeapByIndex((int)HeapID::Graphics)->WalkTheHeap();
 	#endif // DEBUG
 
-
+	 
 	//release all the spheres and delete the memory pool. this calls the destructor, releasing all the objects within it.
-
+	delete spherePool;
 }
 //[comment]
 // In the main function, we will create the scene which is composed of 5 spheres
